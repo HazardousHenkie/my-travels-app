@@ -1,26 +1,42 @@
 import React from 'react'
 
-import { BrowserRouter as Router } from 'react-router-dom'
+import { Router } from 'react-router-dom'
 
 import Container from '@material-ui/core/Container'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import MainMenu from './components/MainMenu/MainMenu'
-import Routes from './routes/Routes'
 
-function App() {
-  return (
-    <div className="App">
-      <React.Fragment>
-        <CssBaseline />
-        <Router>
+import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles'
+import { ThemeProvider } from '@material-ui/styles'
+
+import Routes from './routes/Routes'
+import MainMenu from './components/MainMenu'
+import history from './Helpers/History'
+
+import { WithAuthentication } from './components/Authentication'
+
+let theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#343434'
+    }
+  }
+})
+theme = responsiveFontSizes(theme)
+
+const App = () => (
+  <div className="App">
+    <React.Fragment>
+      <CssBaseline />
+      <Router history={history}>
+        <ThemeProvider theme={theme}>
           <MainMenu />
           <Container fixed>
             <Routes />
           </Container>
-        </Router>
-      </React.Fragment>
-    </div>
-  )
-}
+        </ThemeProvider>
+      </Router>
+    </React.Fragment>
+  </div>
+)
 
-export default App
+export default WithAuthentication(App)
