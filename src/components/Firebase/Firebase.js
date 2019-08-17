@@ -1,6 +1,7 @@
 import app from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/database'
+import 'firebase/storage'
 
 const prodConfig = {
   apiKey: process.env.REACT_APP_PROD_API_KEY,
@@ -28,7 +29,8 @@ class Firebase {
 
     this.auth = app.auth()
     this.db = app.database()
-
+    this.storage = app.storage()
+    this.app = app
     this.googleProvider = new app.auth.GoogleAuthProvider()
   }
 
@@ -41,8 +43,12 @@ class Firebase {
   message = uid => this.db.ref(`messages/${uid}`)
 
   messages = () => this.db.ref('messages')
+
+  imagesUser = () => this.db.ref('images_user')
+
+  getStorage = () => this.storage.ref()
+
+  firebase = () => this.app
 }
 
-const FirebaseExported = new Firebase()
-
-export default FirebaseExported
+export default Firebase

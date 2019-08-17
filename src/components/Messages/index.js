@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import Firebase from '../Firebase/Firebase'
 
-const onRemoveMessage = uid => {
-  Firebase.message(uid).remove()
+import ImageUpload from '../ImageUpload'
+
+import { withFirebase } from '../Firebase'
+
+const onRemoveMessage = ({ uid, firebase }) => {
+  firebase.message(uid).remove()
 }
 
-const GetMessages = () => {
+const GetMessages = ({ firebase }) => {
   const [text, setText] = useState('')
   const [errorMessage, setErrorMessage] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -22,7 +25,7 @@ const GetMessages = () => {
     event.preventDefault()
 
     try {
-      await Firebase.messages().push({
+      await firebase.messages().push({
         text,
         userId
       })
@@ -33,10 +36,10 @@ const GetMessages = () => {
     }
   }
 
-  // only get from specific user id
   useEffect(() => {
     setLoading(true)
-    const unsubscribe = Firebase.messages(userId)
+    const unsubscribe = firebase
+      .messages(userId)
       .orderByChild('userId')
       .equalTo(userId)
       .on(
@@ -63,13 +66,15 @@ const GetMessages = () => {
       )
 
     return () => unsubscribe
-  }, [userId])
+  }, [userId, firebase])
 
   return (
     <div>
       {loading && <CircularProgress className="messageLoading" />}
 
       {errorMessage}
+
+      <ImageUpload />
 
       <ul>
         {messages.map(message => (
@@ -92,4 +97,4 @@ const GetMessages = () => {
   )
 }
 
-export default GetMessages
+export default withFirebase(GetMessages)
