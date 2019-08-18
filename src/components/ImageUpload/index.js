@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import shortid from 'shortid'
 import { FilePond, registerPlugin } from 'react-filepond'
@@ -11,27 +11,35 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
+// todo for now this is fine but we can't really re-use this component since we can only save one image which is linked to one user make it so it can be re-used more. Everything is done is this component only
 const ImageUpload = ({ firebase }) => {
   const [files, setFiles] = useState([])
   const [uploadedFile, setUploadedFile] = useState('')
   const userId = useSelector(state => state.user.userId)
 
-  firebase
-    .imagesUser()
-    .child(userId)
-    .once('value', snapshot => {
-      if (snapshot.val() !== null) {
-        // TODO infinite loop fix
-        // setFiles([
-        //   {
-        //     source: snapshot.val().downloadURL,
-        //     options: {
-        //       type: 'local'
-        //     }
-        //   }
-        // ])
-      }
-    })
+  useEffect(
+    () => {
+      const unsubscribe = firebase
+        .imagesUser()
+        .child(userId)
+        .once('value', snapshot => {
+          if (snapshot.val() !== null) {
+            setFiles([
+              {
+                source: snapshot.val().downloadURL,
+                options: {
+                  type: 'local'
+                }
+              }
+            ])
+
+            setUploadedFile(snapshot.val().downloadURL)
+          }
+        })
+      return () => unsubscribe
+    },
+    [firebase, userId]
+  )
 
   return (
     <div className="imageUpload">
@@ -39,6 +47,9 @@ const ImageUpload = ({ firebase }) => {
         files={files}
         allowMultiple={false}
         maxFiles={1}
+        onupdatefiles={fileItems => {
+          setFiles(fileItems.map(fileItem => fileItem.file))
+        }}
         server={{
           process: (
             fieldName,
@@ -75,18 +86,6 @@ const ImageUpload = ({ firebase }) => {
                       })
 
                     setUploadedFile(downloadURL)
-
-                    // const xhr = new XMLHttpRequest()
-                    // xhr.responseType = 'blob'
-                    // xhr.onload = () => {
-                    //   const blob = xhr.response
-                    //   load(blob)
-                    //   setFiles(blob)
-                    // }
-                    // xhr.open('GET', downloadURL)
-                    // xhr.send()
-
-                    // console.log(downloadURL)
                   })
                 } catch (userError) {
                   error(userError)
@@ -95,6 +94,18 @@ const ImageUpload = ({ firebase }) => {
                 load()
               }
             )
+          },
+          load: (source, load, error, progress, abort) => {
+            progress(true, 0, 1024)
+
+            let xhr = new XMLHttpRequest()
+            xhr.responseType = 'blob'
+            xhr.onload = function () {
+              let blob = xhr.response
+              load(blob)
+            }
+            xhr.open('GET', source)
+            xhr.send()
           },
           revert: (uniqueFileId, load, error) => {
             const imageRef = firebase

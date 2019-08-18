@@ -13,7 +13,6 @@ import { store, persistor } from './Redux/Store'
 import history from './Helpers/History'
 import * as serviceWorker from './serviceWorker'
 
-// import { AuthenticatedProvider } from './components/Authentication/AuthenticationContext'
 import Firebase, { FirebaseContext } from './components/Firebase'
 
 import 'typeface-roboto'
@@ -23,9 +22,7 @@ ReactDOM.render(
     <PersistGate loading={null} persistor={persistor}>
       <Router history={history}>
         <FirebaseContext.Provider value={new Firebase()}>
-          {/* <AuthenticatedProvider> */}
           <App />
-          {/* </AuthenticatedProvider> */}
         </FirebaseContext.Provider>
       </Router>
     </PersistGate>
