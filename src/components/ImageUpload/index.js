@@ -12,14 +12,31 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
 const ImageUpload = ({ firebase }) => {
-  // const [files, setFiles] = useState([])
+  const [files, setFiles] = useState([])
   const [uploadedFile, setUploadedFile] = useState('')
   const userId = useSelector(state => state.user.userId)
+
+  firebase
+    .imagesUser()
+    .child(userId)
+    .once('value', snapshot => {
+      if (snapshot.val() !== null) {
+        // TODO infinite loop fix
+        // setFiles([
+        //   {
+        //     source: snapshot.val().downloadURL,
+        //     options: {
+        //       type: 'local'
+        //     }
+        //   }
+        // ])
+      }
+    })
 
   return (
     <div className="imageUpload">
       <FilePond
-        // files={files}
+        files={files}
         allowMultiple={false}
         maxFiles={1}
         server={{
