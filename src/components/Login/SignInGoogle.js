@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 
 import { useDispatch } from 'react-redux'
 
@@ -16,6 +16,8 @@ import history from '../../Helpers/History'
 
 import { withFirebase } from '../Firebase'
 
+import SnackbarContext from '../Snackbar/Context'
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3, 2)
@@ -31,6 +33,7 @@ const useStyles = makeStyles(theme => ({
 const SignInGoogle = ({ firebase }) => {
   const classes = useStyles()
   const [errorMessage, setError] = useState('')
+  const { setSnackbarState } = useContext(SnackbarContext)
   const dispatch = useDispatch()
   const onSubmit = async event => {
     event.preventDefault()
@@ -52,9 +55,11 @@ const SignInGoogle = ({ firebase }) => {
         })
       )
 
+      setSnackbarState({ message: 'Logged in!', variant: 'success' })
       history.push(routes.about)
     } catch (error) {
       setError({ error })
+      setSnackbarState({ message: error, variant: 'error' })
     }
   }
 
