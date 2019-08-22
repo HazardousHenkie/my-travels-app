@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useSelector } from 'react-redux'
+
+import { compose } from 'recompose'
+
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import ImageUpload from '../ImageUpload'
 
 import { withFirebase } from '../Firebase'
 
-const onRemoveMessage = ({ uid, firebase }) => {
-  firebase.message(uid).remove()
-}
+import SnackbarContext from '../Snackbar/Context'
 
 const GetMessages = ({ firebase }) => {
+  const { setSnackbarState } = useContext(SnackbarContext)
   const [text, setText] = useState('')
   const [errorMessage, setErrorMessage] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -31,9 +33,15 @@ const GetMessages = ({ firebase }) => {
       })
 
       setText('')
+      setSnackbarState({ message: 'Message was created!', variant: 'success' })
     } catch (error) {
+      setSnackbarState({ message: error, variant: 'error' })
       setErrorMessage({ error })
     }
+  }
+
+  const onRemoveMessage = uid => {
+    firebase.message(uid).remove()
   }
 
   useEffect(() => {
@@ -61,12 +69,13 @@ const GetMessages = ({ firebase }) => {
           }
         },
         err => {
+          setSnackbarState({ message: err, variant: 'error' })
           setErrorMessage(err)
         }
       )
 
     return () => unsubscribe
-  }, [userId, firebase])
+  }, [userId, firebase, setSnackbarState])
 
   return (
     <div>
@@ -97,4 +106,4 @@ const GetMessages = ({ firebase }) => {
   )
 }
 
-export default withFirebase(GetMessages)
+export default compose(withFirebase)(GetMessages)
