@@ -1,45 +1,47 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import shortid from 'shortid'
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
 import { withFirebase } from '../Firebase'
+import SnackbarContext from '../Snackbar/Context'
 
 import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
-// todo for now this is fine but we can't really re-use this component since we can only save one image which is linked to one user make it so it can be re-used more. Everything is done is this component only
 const ImageUpload = ({ firebase }) => {
   const [files, setFiles] = useState([])
   const [uploadedFile, setUploadedFile] = useState('')
   const userId = useSelector(state => state.user.userId)
+  const { setSnackbarState } = useContext(SnackbarContext)
 
-  useEffect(
-    () => {
-      const unsubscribe = firebase
-        .imagesUser()
-        .child(userId)
-        .once('value', snapshot => {
-          if (snapshot.val() !== null) {
-            setFiles([
-              {
-                source: snapshot.val().downloadURL,
-                options: {
-                  type: 'local'
-                }
+  useEffect(() => {
+    const unsubscribe = firebase
+      .imagesUser()
+      .child(userId)
+      .once('value', snapshot => {
+        if (snapshot.val() !== null) {
+          setFiles([
+            {
+              source: snapshot.val().downloadURL,
+              options: {
+                type: 'local'
               }
-            ])
+            }
+          ])
 
-            setUploadedFile(snapshot.val().downloadURL)
-          }
-        })
-      return () => unsubscribe
-    },
-    [firebase, userId]
-  )
+          setUploadedFile(snapshot.val().downloadURL)
+        }
+      })
+      .catch(removeError => {
+        setSnackbarState({ message: removeError, variant: 'error' })
+      })
+
+    return () => unsubscribe
+  }, [firebase, userId, setSnackbarState])
 
   return (
     <div className="imageUpload">
@@ -72,12 +74,13 @@ const ImageUpload = ({ firebase }) => {
                 progress(true, snapshot.bytesTransferred, snapshot.totalBytes)
               },
               err => {
-                error(err.message)
+                setSnackbarState({ message: err.message, variant: 'error' })
                 abort()
               },
               () => {
-                try {
-                  uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                uploadTask.snapshot.ref
+                  .getDownloadURL()
+                  .then(downloadURL => {
                     firebase
                       .imagesUser()
                       .child(userId)
@@ -86,28 +89,32 @@ const ImageUpload = ({ firebase }) => {
                       })
 
                     setUploadedFile(downloadURL)
+                    setSnackbarState({
+                      message: 'Image uploaded!',
+                      variant: 'success'
+                    })
                   })
-                } catch (userError) {
-                  error(userError)
-                }
+                  .catch(userError => {
+                    setSnackbarState({ message: userError, variant: 'error' })
+                  })
 
                 load()
               }
             )
           },
-          load: (source, load, error, progress, abort) => {
+          load: (source, load, error, progress) => {
             progress(true, 0, 1024)
 
-            let xhr = new XMLHttpRequest()
+            const xhr = new XMLHttpRequest()
             xhr.responseType = 'blob'
-            xhr.onload = function () {
-              let blob = xhr.response
+            xhr.onload = () => {
+              const blob = xhr.response
               load(blob)
             }
             xhr.open('GET', source)
             xhr.send()
           },
-          revert: (uniqueFileId, load, error) => {
+          revert: (uniqueFileId, load) => {
             const imageRef = firebase
               .firebase()
               .storage()
@@ -124,7 +131,7 @@ const ImageUpload = ({ firebase }) => {
                 load()
               })
               .catch(removeError => {
-                error(removeError)
+                setSnackbarState({ message: removeError, variant: 'error' })
               })
           }
         }}

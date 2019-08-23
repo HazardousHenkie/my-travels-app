@@ -1,4 +1,5 @@
 import React from 'react'
+import { compose } from 'recompose'
 
 import { Router } from 'react-router-dom'
 
@@ -13,6 +14,7 @@ import MainMenu from './components/MainMenu'
 import history from './Helpers/History'
 
 import { WithAuthentication } from './components/Authentication'
+import { withSnackbar } from './components/Snackbar'
 
 let theme = createMuiTheme({
   palette: {
@@ -39,4 +41,7 @@ const App = () => (
   </div>
 )
 
-export default WithAuthentication(App)
+export default compose(
+  withSnackbar,
+  WithAuthentication
+)(App)
