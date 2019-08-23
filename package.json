@@ -7,10 +7,13 @@
     "@material-ui/icons": "^4.2.1",
     "@material-ui/styles": "^4.3.0",
     "axios": "^0.19.0",
+    "clsx": "^1.0.4",
     "filepond": "^4.4.13",
     "filepond-plugin-image-exif-orientation": "^1.0.6",
     "filepond-plugin-image-preview": "^4.3.2",
     "firebase": "^6.3.5",
+    "formik": "^1.5.8",
+    "formik-material-ui": "^0.0.22",
     "history": "^4.9.0",
     "node-sass": "^4.12.0",
     "react": "^16.9.0",
@@ -23,7 +26,8 @@
     "redux": "^4.0.4",
     "redux-persist": "^5.10.0",
     "shortid": "^2.2.14",
-    "typeface-roboto": "0.0.75"
+    "typeface-roboto": "0.0.75",
+    "yup": "^0.27.0"
   },
   "scripts": {
     "start": "react-scripts start",

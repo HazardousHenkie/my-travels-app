@@ -1,20 +1,14 @@
-import React, { useState } from 'react'
-
+import React, { useContext } from 'react'
 import { useDispatch } from 'react-redux'
-
 import Button from '@material-ui/core/Button'
 import Group from '@material-ui/icons/Group'
 import Paper from '@material-ui/core/Paper'
-
 import { makeStyles } from '@material-ui/core/styles'
-
 import { addUser } from '../../Redux/Actions'
-
 import * as routes from '../../constants/routes'
-
 import history from '../../Helpers/History'
-
 import { withFirebase } from '../Firebase'
+import SnackbarContext from '../Snackbar/Context'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -30,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 const SignInGoogle = ({ firebase }) => {
   const classes = useStyles()
-  const [errorMessage, setError] = useState('')
+  const { setSnackbarState } = useContext(SnackbarContext)
   const dispatch = useDispatch()
   const onSubmit = async event => {
     event.preventDefault()
@@ -42,8 +36,6 @@ const SignInGoogle = ({ firebase }) => {
         email: socialAuthUser.user.email
       })
 
-      setError('')
-
       dispatch(
         addUser({
           loggedIn: true,
@@ -52,9 +44,10 @@ const SignInGoogle = ({ firebase }) => {
         })
       )
 
+      setSnackbarState({ message: 'Logged in!', variant: 'success' })
       history.push(routes.about)
     } catch (error) {
-      setError({ error })
+      setSnackbarState({ message: error, variant: 'error' })
     }
   }
 
@@ -70,8 +63,6 @@ const SignInGoogle = ({ firebase }) => {
           <Group className={classes.leftIcon}>send</Group>
           Sign In with Google
         </Button>
-
-        {errorMessage && <p>{errorMessage.message}</p>}
       </Paper>
     </form>
   )
