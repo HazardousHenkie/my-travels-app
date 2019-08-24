@@ -12,6 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
+import EditIcon from '@material-ui/icons/Edit'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import * as Yup from 'yup'
@@ -32,8 +33,7 @@ const useStyles = makeStyles(theme => ({
     width: 'calc(100% - 90px)'
   },
   fab: {
-    margin: '18px 8px',
-    borderRadius: '50%'
+    margin: '14px 8px'
   },
   extendedIcon: {
     marginRight: theme.spacing(1)
@@ -52,6 +52,11 @@ const GetMessages = ({ firebase }) => {
 
   const onRemoveMessage = uid => {
     firebase.message(uid).remove()
+    setSnackbarState({ message: 'Message was deleted!', variant: 'success' })
+  }
+
+  const onEditMessage = uid => {
+    console.log(uid)
     setSnackbarState({ message: 'Message was deleted!', variant: 'success' })
   }
 
@@ -98,7 +103,8 @@ const GetMessages = ({ firebase }) => {
           try {
             firebase.messages().push({
               text: message,
-              userId
+              userId,
+              createdDate: Date()
             })
             setSubmitting(false)
             resetForm(initialValues)
@@ -127,7 +133,7 @@ const GetMessages = ({ firebase }) => {
 
             <Fab
               type="submit"
-              variant="contained"
+              variant="round"
               color="secondary"
               disabled={isSubmitting}
               aria-label="add"
@@ -141,11 +147,18 @@ const GetMessages = ({ firebase }) => {
       {loading && <CircularProgress className="messageLoading" />}
 
       <List className={classes.root}>
-        {messages.map(message => (
+        {messages.map((message, index) => (
           <div key={message.uid}>
             <ListItem alignItems="flex-start">
               <ListItemText primary="Message" secondary={message.text} />
               <ListItemSecondaryAction>
+                <IconButton
+                  onClick={() => onEditMessage(message)}
+                  edge="end"
+                  aria-label="edit"
+                >
+                  <EditIcon />
+                </IconButton>
                 <IconButton
                   onClick={() => onRemoveMessage(message.uid)}
                   edge="end"
@@ -155,7 +168,8 @@ const GetMessages = ({ firebase }) => {
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>
-            <Divider component="li" />
+
+            {messages.length !== index + 1 && <Divider component="li" />}
           </div>
         ))}
       </List>
