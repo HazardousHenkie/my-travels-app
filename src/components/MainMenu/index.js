@@ -21,9 +21,10 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-function MainMenu() {
+const MainMenu = () => {
   const authenticated = useSelector(state => state.user.loggedIn)
   const classes = useStyles()
+
   return (
     <AppBar position="static">
       <Toolbar>
