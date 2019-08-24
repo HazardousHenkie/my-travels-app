@@ -2,18 +2,49 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import { compose } from 'recompose'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import Fab from '@material-ui/core/Fab'
+import AddIcon from '@material-ui/icons/Add'
+import { makeStyles } from '@material-ui/core/styles'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import Divider from '@material-ui/core/Divider'
+import ListItemText from '@material-ui/core/ListItemText'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import IconButton from '@material-ui/core/IconButton'
+import DeleteIcon from '@material-ui/icons/Delete'
+import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import * as Yup from 'yup'
-import ImageUpload from '../ImageUpload'
 import { withFirebase } from '../Firebase'
 import SnackbarContext from '../Snackbar/Context'
 
 const MessageScheme = Yup.object().shape({
-  message: Yup.string().required('Required')
+  message: Yup.string()
+    .required('Required')
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
 })
 
+const useStyles = makeStyles(theme => ({
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 'calc(100% - 90px)'
+  },
+  fab: {
+    margin: '18px 8px',
+    borderRadius: '50%'
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1)
+  },
+  inline: {
+    display: 'inline'
+  }
+}))
+
 const GetMessages = ({ firebase }) => {
+  const classes = useStyles()
   const { setSnackbarState } = useContext(SnackbarContext)
   const [loading, setLoading] = useState(false)
   const [messages, setMessages] = useState([])
@@ -58,27 +89,10 @@ const GetMessages = ({ firebase }) => {
 
   return (
     <div>
-      {loading && <CircularProgress className="messageLoading" />}
-
-      <ImageUpload />
-
-      <ul>
-        {messages.map(message => (
-          <li key={message.uid}>
-            <strong>{message.userId}</strong>
-            {message.text}
-
-            <button type="button" onClick={() => onRemoveMessage(message.uid)}>
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
-
       <Formik
         initialValues={{ message: '' }}
         validationSchema={MessageScheme}
-        onSubmit={(values, { setSubmitting }) => {
+        onSubmit={(values, { setSubmitting, resetForm, initialValues }) => {
           const { message } = values
 
           try {
@@ -87,6 +101,7 @@ const GetMessages = ({ firebase }) => {
               userId
             })
             setSubmitting(false)
+            resetForm(initialValues)
             setSnackbarState({
               message: 'Message was created!',
               variant: 'success'
@@ -99,14 +114,51 @@ const GetMessages = ({ firebase }) => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <Field type="text" name="message" component={TextField} />
-            <ErrorMessage name="message" component="span" />
-            <button type="submit" disabled={isSubmitting}>
-              Submit
-            </button>
+            <Field
+              type="text"
+              name="message"
+              label="Message"
+              component={TextField}
+              className={classes.textField}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+            />
+
+            <Fab
+              type="submit"
+              variant="contained"
+              color="secondary"
+              disabled={isSubmitting}
+              aria-label="add"
+              className={classes.fab}
+            >
+              <AddIcon />
+            </Fab>
           </Form>
         )}
       </Formik>
+      {loading && <CircularProgress className="messageLoading" />}
+
+      <List className={classes.root}>
+        {messages.map(message => (
+          <div key={message.uid}>
+            <ListItem alignItems="flex-start">
+              <ListItemText primary="Message" secondary={message.text} />
+              <ListItemSecondaryAction>
+                <IconButton
+                  onClick={() => onRemoveMessage(message.uid)}
+                  edge="end"
+                  aria-label="delete"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+            <Divider component="li" />
+          </div>
+        ))}
+      </List>
     </div>
   )
 }
