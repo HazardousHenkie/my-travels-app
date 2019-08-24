@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import MessageList from '../../components/Messages'
 import { WithAuthorization } from '../../components/Authentication'
 
+import './About.scss'
+
 const useStyles = makeStyles(() => ({
   title: {
     flexGrow: 1
