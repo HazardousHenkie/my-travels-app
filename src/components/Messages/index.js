@@ -1,29 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useSelector } from 'react-redux'
-import { compose } from 'recompose'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Fab from '@material-ui/core/Fab'
 import AddIcon from '@material-ui/icons/Add'
 import { makeStyles } from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
 import Divider from '@material-ui/core/Divider'
-import ListItemText from '@material-ui/core/ListItemText'
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
-import IconButton from '@material-ui/core/IconButton'
-import DeleteIcon from '@material-ui/icons/Delete'
-import EditIcon from '@material-ui/icons/Edit'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import * as Yup from 'yup'
+import moment from 'moment'
 import { withFirebase } from '../Firebase'
 import SnackbarContext from '../Snackbar/Context'
+import MessageListItem from './MessageListItem'
 
 const MessageScheme = Yup.object().shape({
-  message: Yup.string()
-    .required('Required')
-    .min(2, 'Too Short!')
-    .max(50, 'Too Long!')
+  message: Yup.string().required('Required')
 })
 
 const useStyles = makeStyles(theme => ({
@@ -50,16 +42,6 @@ const GetMessages = ({ firebase }) => {
   const [messages, setMessages] = useState([])
   const userId = useSelector(state => state.user.userId)
 
-  const onRemoveMessage = uid => {
-    firebase.message(uid).remove()
-    setSnackbarState({ message: 'Message was deleted!', variant: 'success' })
-  }
-
-  const onEditMessage = uid => {
-    console.log(uid)
-    setSnackbarState({ message: 'Message was deleted!', variant: 'success' })
-  }
-
   useEffect(() => {
     setLoading(true)
     const unsubscribe = firebase
@@ -71,12 +53,23 @@ const GetMessages = ({ firebase }) => {
         snapshot => {
           const messagesObject = snapshot.val()
           if (messagesObject) {
-            setMessages(
-              Object.keys(messagesObject).map(key => ({
-                ...messagesObject[key],
-                uid: key
-              }))
-            )
+            const sortedMessages = Object.keys(messagesObject).map(key => ({
+              text: messagesObject[key].text,
+              date2: messagesObject[key].createdDate,
+              date: moment(messagesObject[key].createdDate).format(
+                'MM/DD/YYYY'
+              ),
+              uid: key
+            }))
+
+            sortedMessages.sort((a, b) => {
+              const dateA = new Date(a.date2)
+              const dateB = new Date(b.date2)
+
+              return dateB - dateA
+            })
+
+            setMessages(sortedMessages)
 
             setLoading(false)
           } else {
@@ -104,7 +97,7 @@ const GetMessages = ({ firebase }) => {
             firebase.messages().push({
               text: message,
               userId,
-              createdDate: Date()
+              createdDate: firebase.firebase().database.ServerValue.TIMESTAMP
             })
             setSubmitting(false)
             resetForm(initialValues)
@@ -149,25 +142,7 @@ const GetMessages = ({ firebase }) => {
       <List className={classes.root}>
         {messages.map((message, index) => (
           <div key={message.uid}>
-            <ListItem alignItems="flex-start">
-              <ListItemText primary="Message" secondary={message.text} />
-              <ListItemSecondaryAction>
-                <IconButton
-                  onClick={() => onEditMessage(message)}
-                  edge="end"
-                  aria-label="edit"
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => onRemoveMessage(message.uid)}
-                  edge="end"
-                  aria-label="delete"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
+            <MessageListItem message={message} />
 
             {messages.length !== index + 1 && <Divider component="li" />}
           </div>
@@ -177,4 +152,4 @@ const GetMessages = ({ firebase }) => {
   )
 }
 
-export default compose(withFirebase)(GetMessages)
+export default withFirebase(GetMessages)
