@@ -41,6 +41,13 @@ const MainMenu = () => {
             About
           </Button>
         )}
+
+        {authenticated > 0 && (
+          <Button component={Link} to={routes.profile} color="inherit">
+            Profile
+          </Button>
+        )}
+
         {authenticated > 0 && <SignOutButton />}
       </Toolbar>
     </AppBar>

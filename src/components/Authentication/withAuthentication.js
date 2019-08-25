@@ -13,6 +13,7 @@ const withAuthentication = Component => {
     const [authenticated, setAuthenticated] = useState(false)
 
     firebase.auth.onAuthStateChanged(authUser => {
+      console.log('test here')
       if (authUser) {
         dispatch(
           addUser({
