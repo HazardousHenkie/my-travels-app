@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { useDispatch } from 'react-redux'
 import AuthUserContext from './context'
 import { addUser } from '../../Redux/Actions'
 
@@ -11,26 +11,44 @@ const withAuthentication = Component => {
     const { firebase } = props
     const dispatch = useDispatch()
     const [authenticated, setAuthenticated] = useState(false)
+    const { userId, loggedIn } = useSelector(state => state.user)
 
-    firebase.auth.onAuthStateChanged(authUser => {
-      console.log('test here')
-      if (authUser) {
-        dispatch(
-          addUser({
-            loggedIn: true,
-            userName: authUser.displayName,
-            userId: authUser.uid
-          })
-        )
+    useEffect(() => {
+      const listener = firebase.auth.onAuthStateChanged(authUser => {
+        if (authUser) {
+          if (loggedIn === false) {
+            firebase.user(userId).once('value', snapshot => {
+              dispatch(
+                addUser({
+                  loggedIn: true,
+                  userName: snapshot.val().username,
+                  userDescription:
+                    snapshot.val().description !== null
+                      ? snapshot.val().description
+                      : '',
+                  userId: authUser.uid
+                })
+              )
+            })
+          }
 
-        setAuthenticated(true)
-      } else {
-        dispatch(addUser({ loggedin: false, userName: '', userId: '' }))
+          setAuthenticated(true)
+        } else {
+          dispatch(
+            addUser({
+              loggedin: false,
+              userName: '',
+              userDescription: '',
+              userId: ''
+            })
+          )
 
-        setAuthenticated(false)
-      }
-    })
+          setAuthenticated(false)
+        }
+      })
 
+      return () => listener
+    }, [setAuthenticated, firebase, dispatch, loggedIn, userId])
     return (
       <AuthUserContext.Provider value={authenticated}>
         <Component {...props} />
