@@ -44,7 +44,7 @@ const MessageListItem = ({ firebase, message }) => {
   }
 
   return (
-    <div>
+    <div className="message_list_item">
       <ListItem alignItems="flex-start">
         <ListItemText
           primary="Message"
