@@ -39,7 +39,6 @@ const Profile = ({ firebase }) => {
   const dispatch = useDispatch()
   const { setSnackbarState } = useContext(SnackbarContext)
   const { userId, userName, userDescription } = useSelector(state => state.user)
-  console.log(userName)
 
   return (
     <div className="profile">
@@ -129,7 +128,7 @@ const Profile = ({ firebase }) => {
           </Formik>
         </Grid>
         <Grid item xs={6}>
-          {/* <ImageUpload /> */}
+          <ImageUpload />
         </Grid>
       </Grid>
     </div>

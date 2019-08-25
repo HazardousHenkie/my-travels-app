@@ -31,18 +31,35 @@ const SignInGoogle = ({ firebase }) => {
 
     try {
       const socialAuthUser = await firebase.doSignInWithGoogle()
-      await firebase.user(socialAuthUser.user.uid).set({
-        username: socialAuthUser.user.displayName,
-        email: socialAuthUser.user.email
-      })
 
-      dispatch(
-        addUser({
-          loggedIn: true,
-          userName: socialAuthUser.user.displayName,
-          userId: socialAuthUser.user.uid
+      if (socialAuthUser.additionalUserInfo.isNewUser) {
+        await firebase.user(socialAuthUser.user.uid).set({
+          username: socialAuthUser.user.displayName,
+          email: socialAuthUser.user.email
         })
-      )
+
+        dispatch(
+          addUser({
+            loggedIn: true,
+            userName: socialAuthUser.user.displayName,
+            userId: socialAuthUser.user.uid
+          })
+        )
+      } else {
+        firebase.user(socialAuthUser.user.uid).once('value', snapshot => {
+          dispatch(
+            addUser({
+              loggedIn: true,
+              userName: snapshot.val().username,
+              userDescription:
+                snapshot.val().description !== null
+                  ? snapshot.val().description
+                  : '',
+              userId: socialAuthUser.user.uid
+            })
+          )
+        })
+      }
 
       setSnackbarState({ message: 'Logged in!', variant: 'success' })
       history.push(routes.about)

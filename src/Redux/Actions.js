@@ -5,7 +5,8 @@ export const addUser = userInfo => ({
   payload: {
     loggedIn: userInfo.loggedIn,
     userName: userInfo.userName,
-    userId: userInfo.userId
+    userId: userInfo.userId,
+    userDescription: userInfo.userDescription
   }
 })
 

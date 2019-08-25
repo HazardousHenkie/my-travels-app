@@ -9,18 +9,18 @@ const initialState = {
 export default function(state = initialState, action) {
   switch (action.type) {
     case ADD_USER: {
-      console.log(action.type)
       return {
         loggedIn: action.payload.loggedIn,
         userName: action.payload.userName,
-        userId: action.payload.userId
+        userId: action.payload.userId,
+        userDescription: action.payload.userDescription
       }
     }
     case UPDATE_USER: {
-      console.log(action.type)
-      console.log(action)
       return {
+        loggedIn: state.loggedIn,
         userName: action.payload.userName,
+        userId: state.userId,
         userDescription: action.payload.userDescription
       }
     }
