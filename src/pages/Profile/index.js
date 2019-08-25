@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import EditIcon from '@material-ui/icons/Edit'
-import Fab from '@material-ui/core/Fab'
+import Button from '@material-ui/core/Button'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import * as Yup from 'yup'
@@ -26,11 +26,13 @@ const useStyles = makeStyles(theme => ({
   },
   textField: {
     marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 'calc(100% - 90px)'
+    marginRight: theme.spacing(1)
   },
-  fab: {
-    margin: '14px 8px'
+  button: {
+    margin: theme.spacing(1)
+  },
+  rightIcon: {
+    marginLeft: theme.spacing(1)
   }
 }))
 
@@ -113,16 +115,17 @@ const Profile = ({ firebase }) => {
                   fullWidth
                 />
 
-                <Fab
+                <Button
                   type="submit"
-                  variant="round"
+                  variant="contained"
                   color="secondary"
                   disabled={isSubmitting}
                   aria-label="add"
-                  className={classes.fab}
+                  className={classes.button}
                 >
-                  <EditIcon />
-                </Fab>
+                  Save
+                  <EditIcon className={classes.rightIcon} />
+                </Button>
               </Form>
             )}
           </Formik>
