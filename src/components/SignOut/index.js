@@ -21,7 +21,7 @@ const SignOutButton = ({ firebase }) => {
     firebase.doSignOut().then(
       () => {
         dispatch(addUser({ loggedin: false, userName: '', userId: '' }))
-        setSnackbarState({ message: 'Loggd out', variant: 'error' })
+        setSnackbarState({ message: 'Logged out', variant: 'error' })
       },
       error => {
         setSnackbarState({ message: 'Sign Out Error', variant: 'error' })
