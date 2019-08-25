@@ -10,9 +10,12 @@ import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import * as Yup from 'yup'
 import moment from 'moment'
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { withFirebase } from '../Firebase'
 import SnackbarContext from '../Snackbar/Context'
 import MessageListItem from './MessageListItem'
+
+import './messages.scss'
 
 const MessageScheme = Yup.object().shape({
   message: Yup.string().required('Required')
@@ -86,7 +89,7 @@ const GetMessages = ({ firebase }) => {
   }, [userId, firebase, setSnackbarState])
 
   return (
-    <div>
+    <div className="messages">
       <Formik
         initialValues={{ message: '' }}
         validationSchema={MessageScheme}
@@ -140,13 +143,16 @@ const GetMessages = ({ firebase }) => {
       {loading && <CircularProgress className="messageLoading" />}
 
       <List className={classes.root}>
-        {messages.map((message, index) => (
-          <div key={message.uid}>
-            <MessageListItem message={message} />
-
-            {messages.length !== index + 1 && <Divider component="li" />}
-          </div>
-        ))}
+        <TransitionGroup className="messages_list">
+          {messages.map((message, index) => (
+            <CSSTransition key={message.uid} timeout={500} classNames="item">
+              <div className="message_list_item">
+                <MessageListItem message={message} />
+                {messages.length !== index + 1 && <Divider component="li" />}
+              </div>
+            </CSSTransition>
+          ))}
+        </TransitionGroup>
       </List>
     </div>
   )
