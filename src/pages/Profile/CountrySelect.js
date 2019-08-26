@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import clsx from 'clsx'
 import Select from 'react-select'
 import { emphasize, makeStyles, useTheme } from '@material-ui/core/styles'
@@ -9,56 +9,60 @@ import Paper from '@material-ui/core/Paper'
 import Chip from '@material-ui/core/Chip'
 import MenuItem from '@material-ui/core/MenuItem'
 import CancelIcon from '@material-ui/icons/Cancel'
+import axios from 'axios'
 
-const suggestions = [
-  { label: 'Afghanistan' },
-  { label: 'Aland Islands' },
-  { label: 'Albania' },
-  { label: 'Algeria' },
-  { label: 'American Samoa' },
-  { label: 'Andorra' },
-  { label: 'Angola' },
-  { label: 'Anguilla' },
-  { label: 'Antarctica' },
-  { label: 'Antigua and Barbuda' },
-  { label: 'Argentina' },
-  { label: 'Armenia' },
-  { label: 'Aruba' },
-  { label: 'Australia' },
-  { label: 'Austria' },
-  { label: 'Azerbaijan' },
-  { label: 'Bahamas' },
-  { label: 'Bahrain' },
-  { label: 'Bangladesh' },
-  { label: 'Barbados' },
-  { label: 'Belarus' },
-  { label: 'Belgium' },
-  { label: 'Belize' },
-  { label: 'Benin' },
-  { label: 'Bermuda' },
-  { label: 'Bhutan' },
-  { label: 'Bolivia, Plurinational State of' },
-  { label: 'Bonaire, Sint Eustatius and Saba' },
-  { label: 'Bosnia and Herzegovina' },
-  { label: 'Botswana' },
-  { label: 'Bouvet Island' },
-  { label: 'Brazil' },
-  { label: 'British Indian Ocean Territory' },
-  { label: 'Brunei Darussalam' }
-].map(suggestion => ({
-  value: suggestion.label,
-  label: suggestion.label
-}))
+// const suggestions = [
+//   { label: 'Afghanistan' },
+//   { label: 'Aland Islands' },
+//   { label: 'Albania' },
+//   { label: 'Algeria' },
+//   { label: 'American Samoa' },
+//   { label: 'Andorra' },
+//   { label: 'Angola' },
+//   { label: 'Anguilla' },
+//   { label: 'Antarctica' },
+//   { label: 'Antigua and Barbuda' },
+//   { label: 'Argentina' },
+//   { label: 'Armenia' },
+//   { label: 'Aruba' },
+//   { label: 'Australia' },
+//   { label: 'Austria' },
+//   { label: 'Azerbaijan' },
+//   { label: 'Bahamas' },
+//   { label: 'Bahrain' },
+//   { label: 'Bangladesh' },
+//   { label: 'Barbados' },
+//   { label: 'Belarus' },
+//   { label: 'Belgium' },
+//   { label: 'Belize' },
+//   { label: 'Benin' },
+//   { label: 'Bermuda' },
+//   { label: 'Bhutan' },
+//   { label: 'Bolivia, Plurinational State of' },
+//   { label: 'Bonaire, Sint Eustatius and Saba' },
+//   { label: 'Bosnia and Herzegovina' },
+//   { label: 'Botswana' },
+//   { label: 'Bouvet Island' },
+//   { label: 'Brazil' },
+//   { label: 'British Indian Ocean Territory' },
+//   { label: 'Brunei Darussalam' }
+// ].map(suggestion => ({
+//   value: suggestion.label,
+//   label: suggestion.label
+// }))
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-    height: 250,
     minWidth: 290
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    marginTop: '16px'
   },
   input: {
     display: 'flex',
-    padding: 0,
     height: 'auto'
   },
   valueContainer: {
@@ -87,8 +91,8 @@ const useStyles = makeStyles(theme => ({
   },
   placeholder: {
     position: 'absolute',
-    left: 2,
-    bottom: 6,
+    left: 16,
+    bottom: 24.5,
     fontSize: 16
   },
   paper: {
@@ -103,7 +107,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function NoOptionsMessage(props) {
+const NoOptionsMessage = props => {
   const { selectProps, innerProps, children } = props
   return (
     <Typography
@@ -116,11 +120,11 @@ function NoOptionsMessage(props) {
   )
 }
 
-function inputComponent({ inputRef, ...props }) {
+const inputComponent = ({ inputRef, ...props }) => {
   return <div ref={inputRef} {...props} />
 }
 
-function Control(props) {
+const Control = props => {
   const {
     children,
     innerProps,
@@ -131,6 +135,8 @@ function Control(props) {
   return (
     <TextField
       fullWidth
+      variant="outlined"
+      className={classes.textField}
       InputProps={{
         inputComponent,
         inputProps: {
@@ -145,7 +151,7 @@ function Control(props) {
   )
 }
 
-function Option(props) {
+const Option = props => {
   const { innerRef, isFocused, isSelected, innerProps, children } = props
   return (
     <MenuItem
@@ -162,7 +168,7 @@ function Option(props) {
   )
 }
 
-function Placeholder(props) {
+const Placeholder = props => {
   const { selectProps, innerProps = {}, children } = props
   return (
     <Typography
@@ -180,7 +186,7 @@ function ValueContainer(props) {
   return <div className={selectProps.classes.valueContainer}>{children}</div>
 }
 
-function MultiValue(props) {
+const MultiValue = props => {
   const { children, selectProps, isFocused, removeProps } = props
   return (
     <Chip
@@ -195,7 +201,7 @@ function MultiValue(props) {
   )
 }
 
-function Menu(props) {
+const Menu = props => {
   const { selectProps, innerProps, children } = props
   return (
     <Paper square className={selectProps.classes.paper} {...innerProps}>
@@ -204,24 +210,19 @@ function Menu(props) {
   )
 }
 
-const components = {
-  Control,
-  Menu,
-  MultiValue,
-  NoOptionsMessage,
-  Option,
-  Placeholder,
-  ValueContainer
-}
+const IntegrationReactSelect = ({ multi, handleChangeMulti }) => {
+  const components = {
+    Control,
+    Menu,
+    MultiValue,
+    NoOptionsMessage,
+    Option,
+    Placeholder,
+    ValueContainer
+  }
 
-export default function IntegrationReactSelect() {
   const classes = useStyles()
   const theme = useTheme()
-  const [multi, setMulti] = React.useState(null)
-
-  function handleChangeMulti(value) {
-    setMulti(value)
-  }
 
   const selectStyles = {
     input: base => ({
@@ -232,6 +233,22 @@ export default function IntegrationReactSelect() {
       }
     })
   }
+
+  const [suggestions, setSuggestions] = React.useState(null)
+
+  useEffect(() => {
+    async function fetchCountries() {
+      // You can await here
+      const response = await axios.get('https://restcountries.eu/rest/v2/all')
+      const suggestionsResponse = response.data.map(suggestion => ({
+        value: suggestion.name,
+        label: suggestion.name
+      }))
+
+      setSuggestions(suggestionsResponse)
+    }
+    fetchCountries()
+  }, [])
 
   return (
     <div className={classes.root}>
@@ -258,3 +275,5 @@ export default function IntegrationReactSelect() {
     </div>
   )
 }
+
+export default IntegrationReactSelect
