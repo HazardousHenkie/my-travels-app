@@ -14,6 +14,7 @@ import { WithAuthorization } from '../../components/Authentication'
 import SnackbarContext from '../../components/Snackbar/Context'
 import { withFirebase } from '../../components/Firebase'
 import { updateUser } from '../../Redux/Actions'
+import CountrySelect from './CountrySelect'
 
 const ProfileScheme = Yup.object().shape({
   name: Yup.string().required('Required'),
@@ -40,7 +41,14 @@ const Profile = ({ firebase }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { setSnackbarState } = useContext(SnackbarContext)
-  const { userId, userName, userDescription } = useSelector(state => state.user)
+  const { userId, userName, userDescription, countries } = useSelector(
+    state => state.user
+  )
+  const [multi, setMulti] = React.useState(countries)
+
+  function handleChangeMulti(value) {
+    setMulti(value)
+  }
 
   return (
     <div className="profile">
@@ -58,7 +66,10 @@ const Profile = ({ firebase }) => {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Formik
-            initialValues={{ name: userName, description: userDescription }}
+            initialValues={{
+              name: userName,
+              description: userDescription
+            }}
             validationSchema={ProfileScheme}
             onSubmit={(values, { setSubmitting }) => {
               const { name, description } = values
@@ -66,13 +77,15 @@ const Profile = ({ firebase }) => {
               try {
                 firebase.user(userId).update({
                   username: name,
-                  description
+                  description,
+                  countries: multi !== null ? multi : null
                 })
 
                 dispatch(
                   updateUser({
                     userName: name,
-                    userDescription: description
+                    userDescription: description,
+                    countries: multi !== null ? multi : null
                   })
                 )
 
@@ -113,6 +126,11 @@ const Profile = ({ firebase }) => {
                   variant="outlined"
                   margin="normal"
                   fullWidth
+                />
+
+                <CountrySelect
+                  multi={multi}
+                  handleChangeMulti={handleChangeMulti}
                 />
 
                 <Button

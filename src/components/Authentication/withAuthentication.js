@@ -26,6 +26,10 @@ const withAuthentication = Component => {
                     snapshot.val().description !== null
                       ? snapshot.val().description
                       : '',
+                  countries:
+                    snapshot.val().countries !== undefined
+                      ? snapshot.val().countries
+                      : null,
                   userId: authUser.uid
                 })
               )
@@ -39,7 +43,8 @@ const withAuthentication = Component => {
               loggedin: false,
               userName: '',
               userDescription: '',
-              userId: ''
+              userId: '',
+              countries: null
             })
           )
 

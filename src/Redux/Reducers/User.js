@@ -4,7 +4,8 @@ const initialState = {
   loggedIn: false,
   userName: '',
   userId: '',
-  userDescription: ''
+  userDescription: '',
+  countries: []
 }
 export default function(state = initialState, action) {
   switch (action.type) {
@@ -13,7 +14,8 @@ export default function(state = initialState, action) {
         loggedIn: action.payload.loggedIn,
         userName: action.payload.userName,
         userId: action.payload.userId,
-        userDescription: action.payload.userDescription
+        userDescription: action.payload.userDescription,
+        countries: action.payload.countries
       }
     }
     case UPDATE_USER: {
@@ -21,7 +23,8 @@ export default function(state = initialState, action) {
         loggedIn: state.loggedIn,
         userName: action.payload.userName,
         userId: state.userId,
-        userDescription: action.payload.userDescription
+        userDescription: action.payload.userDescription,
+        countries: action.payload.countries
       }
     }
     default:

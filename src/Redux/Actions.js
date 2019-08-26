@@ -6,7 +6,8 @@ export const addUser = userInfo => ({
     loggedIn: userInfo.loggedIn,
     userName: userInfo.userName,
     userId: userInfo.userId,
-    userDescription: userInfo.userDescription
+    userDescription: userInfo.userDescription,
+    countries: userInfo.countries
   }
 })
 
@@ -14,6 +15,7 @@ export const updateUser = userInfo => ({
   type: UPDATE_USER,
   payload: {
     userName: userInfo.userName,
-    userDescription: userInfo.userDescription
+    userDescription: userInfo.userDescription,
+    countries: userInfo.countries
   }
 })

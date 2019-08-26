@@ -55,6 +55,10 @@ const SignInGoogle = ({ firebase }) => {
                 snapshot.val().description !== null
                   ? snapshot.val().description
                   : '',
+              countries:
+                snapshot.val().countries !== undefined
+                  ? snapshot.val().countries
+                  : null,
               userId: socialAuthUser.user.uid
             })
           )
