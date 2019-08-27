@@ -44,6 +44,8 @@ class Firebase {
 
   messages = () => this.db.ref('messages')
 
+  locations = () => this.db.ref('locations')
+
   imagesUser = () => this.db.ref('images_user')
 
   getStorage = () => this.storage.ref()
