@@ -43,6 +43,12 @@ const MainMenu = () => {
         )}
 
         {authenticated > 0 && (
+          <Button component={Link} to={routes.locations} color="inherit">
+            My Locations
+          </Button>
+        )}
+
+        {authenticated > 0 && (
           <Button component={Link} to={routes.profile} color="inherit">
             Profile
           </Button>
