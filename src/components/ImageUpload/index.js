@@ -12,15 +12,14 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
-const ImageUpload = ({ firebase }) => {
+const ImageUpload = ({ firebase, firebaseDbRef }) => {
   const [files, setFiles] = useState([])
   const [uploadedFile, setUploadedFile] = useState('')
   const userId = useSelector(state => state.user.userId)
   const { setSnackbarState } = useContext(SnackbarContext)
-
+  const database = firebaseDbRef
   useEffect(() => {
-    const unsubscribe = firebase
-      .imagesUser()
+    const unsubscribe = database
       .child(userId)
       .once('value', snapshot => {
         if (snapshot.val() !== null) {
@@ -41,7 +40,28 @@ const ImageUpload = ({ firebase }) => {
       })
 
     return () => unsubscribe
-  }, [firebase, userId, setSnackbarState])
+  }, [])
+
+  const removeImage = load => {
+    const imageRef = firebase
+      .firebase()
+      .storage()
+      .refFromURL(uploadedFile)
+
+    imageRef
+      .delete()
+      .then(() => {
+        firebase
+          .imagesUser()
+          .child(userId)
+          .remove()
+
+        load()
+      })
+      .catch(removeError => {
+        setSnackbarState({ message: removeError, variant: 'error' })
+      })
+  }
 
   return (
     <div className="imageUpload">
@@ -114,25 +134,11 @@ const ImageUpload = ({ firebase }) => {
             xhr.open('GET', source)
             xhr.send()
           },
+          remove: (uniqueFileId, load) => {
+            removeImage(load)
+          },
           revert: (uniqueFileId, load) => {
-            const imageRef = firebase
-              .firebase()
-              .storage()
-              .refFromURL(uploadedFile)
-
-            imageRef
-              .delete()
-              .then(() => {
-                firebase
-                  .imagesUser()
-                  .child(userId)
-                  .remove()
-
-                load()
-              })
-              .catch(removeError => {
-                setSnackbarState({ message: removeError, variant: 'error' })
-              })
+            removeImage(load)
           }
         }}
       />
