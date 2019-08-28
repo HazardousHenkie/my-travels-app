@@ -1,142 +1,163 @@
-import React, { useContext } from 'react'
-import { useSelector } from 'react-redux'
-import { compose } from 'recompose'
-import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import EditIcon from '@material-ui/icons/Edit'
+import Stepper from '@material-ui/core/Stepper'
+import Step from '@material-ui/core/Step'
+import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
-import { Formik, Form, Field } from 'formik'
-import { TextField } from 'formik-material-ui'
-import * as Yup from 'yup'
-import ImageUpload from '../../components/ImageUpload'
-import { WithAuthorization } from '../../components/Authentication'
-import SnackbarContext from '../../components/Snackbar/Context'
-import { withFirebase } from '../../components/Firebase'
-
-const LocationsScheme = Yup.object().shape({
-  location: Yup.string().required('Required'),
-  description: Yup.string().required('Required')
-})
+import Typography from '@material-ui/core/Typography'
+import AddStep1 from './addStep1'
+import AddStep2 from './addStep2'
 
 const useStyles = makeStyles(theme => ({
-  title: {
-    flexGrow: 1
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1)
+  root: {
+    width: '90%'
   },
   button: {
-    margin: theme.spacing(1)
+    marginRight: theme.spacing(1)
   },
-  rightIcon: {
-    marginLeft: theme.spacing(1)
+  instructions: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   }
 }))
 
-const Add = ({ firebase }) => {
+function getSteps() {
+  return ['Where did you go?', 'Add an image!', 'Create an ad']
+}
+
+function getStepContent(step) {
+  switch (step) {
+    case 0:
+      return <AddStep1 />
+    case 1:
+      return <AddStep2 />
+    case 2:
+      return 'This is the bit I really care about!'
+    default:
+      return 'Unknown step'
+  }
+}
+
+export default function HorizontalLinearStepper() {
   const classes = useStyles()
-  const { setSnackbarState } = useContext(SnackbarContext)
-  const { userId } = useSelector(state => state.user)
+  const [activeStep, setActiveStep] = useState(0)
+  const [skipped, setSkipped] = useState(new Set())
+  const steps = getSteps()
+
+  function isStepOptional(step) {
+    return step === 1
+  }
+
+  function isStepSkipped(step) {
+    return skipped.has(step)
+  }
+
+  function handleNext() {
+    let newSkipped = skipped
+
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values())
+      newSkipped.delete(activeStep)
+    }
+
+    setActiveStep(prevActiveStep => prevActiveStep + 1)
+    setSkipped(newSkipped)
+  }
+
+  function handleBack() {
+    setActiveStep(prevActiveStep => prevActiveStep - 1)
+  }
+
+  function handleSkip() {
+    if (!isStepOptional(activeStep)) {
+      throw new Error("You can't skip a step that isn't optional.")
+    }
+
+    setActiveStep(prevActiveStep => prevActiveStep + 1)
+    setSkipped(prevSkipped => {
+      const newSkipped = new Set(prevSkipped.values())
+
+      newSkipped.add(activeStep)
+
+      return newSkipped
+    })
+  }
+
+  function handleReset() {
+    setActiveStep(0)
+  }
 
   return (
-    <div className="locations">
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <div className="locations_inner">
-            <header className="locations_header">
-              <Typography variant="h5" component="h2" className={classes.title}>
-                Add Location
-              </Typography>
-            </header>
+    <div className={classes.root}>
+      <Stepper activeStep={activeStep}>
+        {steps.map((label, index) => {
+          const stepProps = {}
+          const labelProps = {}
+
+          if (isStepOptional(index)) {
+            labelProps.optional = (
+              <Typography variant="caption">Optional</Typography>
+            )
+          }
+
+          if (isStepSkipped(index)) {
+            stepProps.completed = false
+          }
+
+          return (
+            <Step key={label} {...stepProps}>
+              <StepLabel {...labelProps}>{label}</StepLabel>
+            </Step>
+          )
+        })}
+      </Stepper>
+
+      <div>
+        {activeStep === steps.length ? (
+          <div>
+            <Typography className={classes.instructions}>
+              All steps completed - you&apos;re finished
+            </Typography>
+            <Button onClick={handleReset} className={classes.button}>
+              Reset
+            </Button>
           </div>
-        </Grid>
-      </Grid>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Formik
-            initialValues={{
-              // set initial locations
-              location: '',
-              description: ''
-            }}
-            validationSchema={LocationsScheme}
-            onSubmit={(values, { setSubmitting }) => {
-              const { location, description } = values
-
-              try {
-                firebase
-                  .locations()
-                  .child(userId)
-                  .push({
-                    location,
-                    description
-                  })
-
-                setSubmitting(false)
-
-                setSnackbarState({
-                  message: 'Profile was updated!',
-                  variant: 'success'
-                })
-              } catch (error) {
-                setSnackbarState({ message: error, variant: 'error' })
-                setSubmitting(false)
-              }
-            }}
-          >
-            {({ isSubmitting }) => (
-              <Form>
-                <Field
-                  type="text"
-                  name="location"
-                  label="location"
-                  component={TextField}
-                  className={classes.textField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                />
-
-                <Field
-                  type="text"
-                  name="description"
-                  label="Introduction"
-                  component={TextField}
-                  className={classes.textField}
-                  multiline
-                  rows={6}
-                  rowsMax={8}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                />
-
+        ) : (
+          <div>
+            <div className={classes.instructions}>
+              {getStepContent(activeStep)}
+            </div>
+            <div>
+              <Button
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                className={classes.button}
+              >
+                Back
+              </Button>
+              {isStepOptional(activeStep) && (
                 <Button
-                  type="submit"
                   variant="contained"
-                  color="secondary"
-                  disabled={isSubmitting}
-                  aria-label="add"
+                  color="primary"
+                  onClick={handleSkip}
                   className={classes.button}
                 >
-                  Save
-                  <EditIcon className={classes.rightIcon} />
+                  Skip
                 </Button>
-              </Form>
-            )}
-          </Formik>
-        </Grid>
-        <Grid item xs={6}>
-          <ImageUpload />
-        </Grid>
-      </Grid>
+              )}
+
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleNext}
+                className={classes.button}
+              >
+                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
-
-export default compose(
-  withFirebase,
-  WithAuthorization
-)(Add)
