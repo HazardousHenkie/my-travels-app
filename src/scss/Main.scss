@@ -1,5 +1,17 @@
 @import './Variables.scss';
 
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.App {
+  min-height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
 body {
   background: url('../assets/background.jpg');
   background-size: cover;

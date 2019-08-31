@@ -1,3 +1,25 @@
-.active {
-  background-color: rgba(0, 0, 0, 0.2) !important;
+.footer {
+  grid-row-start: 2;
+  grid-row-end: 3;
+
+  .footer_inner {
+    background-color: rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    height: 40px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__copyright {
+      color: white;
+      font-size: 0.875rem;
+    }
+
+    &__image_copyright {
+      color: white;
+      font-size: 0.875rem;
+      margin-left: 3px;
+    }
+  }
 }
