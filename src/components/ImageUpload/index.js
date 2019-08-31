@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import shortid from 'shortid'
 import { FilePond, registerPlugin } from 'react-filepond'
@@ -12,35 +12,11 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
-const ImageUpload = ({ firebase, firebaseDbRef }) => {
-  const [files, setFiles] = useState([])
-  const [uploadedFile, setUploadedFile] = useState('')
+const ImageUpload = ({ firebase, intialFiles, initialFile }) => {
+  const [files, setFiles] = useState(intialFiles)
+  const [uploadedFile, setUploadedFile] = useState(initialFile)
   const userId = useSelector(state => state.user.userId)
   const { setSnackbarState } = useContext(SnackbarContext)
-  const database = firebaseDbRef
-  useEffect(() => {
-    const unsubscribe = database
-      .child(userId)
-      .once('value', snapshot => {
-        if (snapshot.val() !== null) {
-          setFiles([
-            {
-              source: snapshot.val().downloadURL,
-              options: {
-                type: 'local'
-              }
-            }
-          ])
-
-          setUploadedFile(snapshot.val().downloadURL)
-        }
-      })
-      .catch(removeError => {
-        setSnackbarState({ message: removeError, variant: 'error' })
-      })
-
-    return () => unsubscribe
-  }, [])
 
   const removeImage = load => {
     const imageRef = firebase
