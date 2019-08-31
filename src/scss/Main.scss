@@ -1,5 +1,10 @@
 @import './Variables.scss';
 
+body {
+  background: url('../assets/background.jpg');
+  background-size: cover;
+}
+
 .center-content {
   text-align: center;
 }
