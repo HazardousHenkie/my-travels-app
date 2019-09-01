@@ -131,7 +131,7 @@ const GetMessages = ({ firebase }) => {
               type="submit"
               variant="round"
               color="secondary"
-              disabled={isSubmitting || isValid}
+              disabled={isSubmitting || !isValid}
               aria-label="add"
               className={classes.fab}
             >

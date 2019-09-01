@@ -111,7 +111,7 @@ const MessageListItem = ({ firebase, message }) => {
                     type="submit"
                     variant="round"
                     color="secondary"
-                    disabled={isSubmitting || isValid}
+                    disabled={isSubmitting || !isValid}
                     aria-label="add"
                     className={classes.fab}
                   >

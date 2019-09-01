@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { useSelector } from 'react-redux'
 import SignInGoogle from '../../components/Login/SignInGoogle'
-import SignUpEmail from '../../components/SignUp/SignUpEmail'
+import SignInEmail from '../../components/Login/SignInEmail'
 
 import './Home.scss'
 
@@ -17,14 +17,14 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function Home() {
+const Home = () => {
   const loggedIn = useSelector(state => state.user.loggedIn)
   const user = useSelector(state => state.user)
   const classes = useStyles()
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12}>
+      <Grid item xs={5}>
         <div className="Home">
           <header className="home_header">
             <Typography variant="h5" component="h2">
@@ -34,7 +34,7 @@ function Home() {
           {!loggedIn && (
             <div className="signup_forms">
               <Paper className={`${classes.root} center-content`}>
-                <SignUpEmail />
+                <SignInEmail />
                 <SignInGoogle />
               </Paper>
             </div>

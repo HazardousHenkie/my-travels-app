@@ -9,6 +9,8 @@ import history from '../../Helpers/History'
 import { withFirebase } from '../Firebase'
 import SnackbarContext from '../Snackbar/Context'
 
+import './SignInGoogle.scss'
+
 const useStyles = makeStyles(theme => ({
   button: {
     margin: theme.spacing(1)
@@ -69,17 +71,22 @@ const SignInGoogle = ({ firebase }) => {
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <Button
-        type="submit"
-        variant="contained"
-        color="secondary"
-        className={classes.button}
-      >
-        <Group className={classes.leftIcon}>send</Group>
-        Sign In with Google
-      </Button>
-    </form>
+    <div className="signin_google">
+      <p className="signin_google__text">
+        or alternatively Sign In with Google!
+      </p>
+      <form onSubmit={onSubmit}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+        >
+          <Group className={classes.leftIcon} />
+          Sign In with Google
+        </Button>
+      </form>
+    </div>
   )
 }
 
