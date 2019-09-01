@@ -1,5 +1,7 @@
 import React, { useContext } from 'react'
 
+import { Link } from 'react-router-dom'
+
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import * as Yup from 'yup'
@@ -17,18 +19,15 @@ import { withFirebase } from '../Firebase'
 
 import SnackbarContext from '../Snackbar/Context'
 
+import './SignInEmail.scss'
+
 const SignupScheme = Yup.object().shape({
-  username: Yup.string().required('Required'),
   email: Yup.string()
     .required('Required')
     .email(),
   password: Yup.string()
     .required('Required')
-    .min(6),
-  passwordConfirmation: Yup.string().oneOf(
-    [Yup.ref('password'), null],
-    'Passwords must match'
-  )
+    .min(6)
 })
 
 const useStyles = makeStyles(theme => ({
@@ -53,34 +52,30 @@ const SignUpForm = ({ firebase }) => {
   return (
     <div className="signup_form">
       <Typography variant="h5" component="h2" className={classes.title}>
-        Sign Up
+        Sign In
       </Typography>
+
       <Formik
-        initialValues={{
-          username: '',
-          email: '',
-          password: '',
-          passwordConfirmation: ''
-        }}
+        initialValues={{ email: '', password: '' }}
         validationSchema={SignupScheme}
         onSubmit={async (values, { setSubmitting }) => {
-          const { username, email, password } = values
+          const { email, password } = values
 
           try {
-            const emailAuthUser = await firebase.doCreateUserWithEmailAndPassword(
+            const emailAuthUser = await firebase.doSignInWithEmailAndPassword(
               email,
               password
             )
 
             await firebase.user(emailAuthUser.user.uid).set({
-              username,
+              username: emailAuthUser.user.email,
               email: emailAuthUser.user.email
             })
 
             dispatch(
               addUser({
                 loggedIn: true,
-                userName: username,
+                userName: emailAuthUser.user.displayName,
                 userId: emailAuthUser.user.uid
               })
             )
@@ -96,16 +91,6 @@ const SignUpForm = ({ firebase }) => {
       >
         {({ isSubmitting, isValid }) => (
           <Form>
-            <Field
-              type="text"
-              name="username"
-              label="username"
-              component={TextField}
-              className={classes.textField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-            />
             <Field
               type="text"
               name="email"
@@ -126,16 +111,12 @@ const SignUpForm = ({ firebase }) => {
               margin="normal"
               fullWidth
             />
-            <Field
-              type="password"
-              name="passwordConfirmation"
-              label="Confirm Password"
-              component={TextField}
-              className={classes.textField}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-            />
+            <p className="signup_form__password_link">
+              Forgot your Password?
+              <Link to={routes.forgotPassword} className="signup_form__link">
+                Reset it!
+              </Link>
+            </p>
 
             <Button
               type="submit"
@@ -146,11 +127,18 @@ const SignUpForm = ({ firebase }) => {
               className={classes.button}
             >
               <Email className={classes.leftIcon} />
-              Sign Up
+              Sign In
             </Button>
           </Form>
         )}
       </Formik>
+
+      <p>
+        Don&apos;t have an account?
+        <Link to={routes.signUp} className="signup_form__link">
+          Sign Up
+        </Link>
+      </p>
     </div>
   )
 }
