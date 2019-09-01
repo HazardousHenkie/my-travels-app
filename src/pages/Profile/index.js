@@ -101,7 +101,7 @@ const Profile = ({ firebase }) => {
               }
             }}
           >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, isValid }) => (
               <Form>
                 <Field
                   type="text"
@@ -137,7 +137,7 @@ const Profile = ({ firebase }) => {
                   type="submit"
                   variant="contained"
                   color="secondary"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isValid}
                   aria-label="add"
                   className={classes.button}
                 >

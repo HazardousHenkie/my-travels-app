@@ -114,7 +114,7 @@ const GetMessages = ({ firebase }) => {
           }
         }}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, isValid }) => (
           <Form>
             <Field
               type="text"
@@ -131,7 +131,7 @@ const GetMessages = ({ firebase }) => {
               type="submit"
               variant="round"
               color="secondary"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isValid}
               aria-label="add"
               className={classes.fab}
             >
