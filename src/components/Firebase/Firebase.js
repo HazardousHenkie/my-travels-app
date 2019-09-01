@@ -36,6 +36,16 @@ class Firebase {
 
   doSignInWithGoogle = () => this.auth.signInWithPopup(this.googleProvider)
 
+  doCreateUserWithEmailAndPassword = (email, password) =>
+    this.auth.createUserWithEmailAndPassword(email, password)
+
+  doSignInWithEmailAndPassword = (email, password) =>
+    this.auth.signInWithEmailAndPassword(email, password)
+
+  doPasswordReset = email => this.auth.sendPasswordResetEmail(email)
+
+  doPasswordUpdate = password => this.auth.currentUser.updatePassword(password)
+
   doSignOut = () => this.auth.signOut()
 
   user = uid => this.db.ref(`users/${uid}`)

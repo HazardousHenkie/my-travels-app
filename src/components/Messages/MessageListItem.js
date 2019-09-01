@@ -94,7 +94,7 @@ const MessageListItem = ({ firebase, message }) => {
                 }
               }}
             >
-              {({ isSubmitting }) => (
+              {({ isSubmitting, isValid }) => (
                 <Form>
                   <Field
                     type="text"
@@ -111,7 +111,7 @@ const MessageListItem = ({ firebase, message }) => {
                     type="submit"
                     variant="round"
                     color="secondary"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isValid}
                     aria-label="add"
                     className={classes.fab}
                   >
