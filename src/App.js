@@ -11,6 +11,7 @@ import { ThemeProvider } from '@material-ui/styles'
 
 import Routes from './routes/Routes'
 import MainMenu from './components/MainMenu'
+import Footer from './components/Footer'
 import history from './Helpers/History'
 
 import { WithAuthentication } from './components/Authentication'
@@ -30,12 +31,15 @@ const App = () => (
     <React.Fragment>
       <CssBaseline />
       <Router history={history}>
-        <ThemeProvider theme={theme}>
-          <MainMenu />
-          <Container fixed>
-            <Routes />
-          </Container>
-        </ThemeProvider>
+        <div className="content">
+          <ThemeProvider theme={theme}>
+            <MainMenu />
+            <Container fixed>
+              <Routes />
+            </Container>
+          </ThemeProvider>
+        </div>
+        <Footer />
       </Router>
     </React.Fragment>
   </div>

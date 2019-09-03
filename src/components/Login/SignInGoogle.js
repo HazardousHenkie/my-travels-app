@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import { useDispatch } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import Group from '@material-ui/icons/Group'
-import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles'
 import { addUser } from '../../Redux/Actions'
 import * as routes from '../../constants/routes'
@@ -10,10 +9,9 @@ import history from '../../Helpers/History'
 import { withFirebase } from '../Firebase'
 import SnackbarContext from '../Snackbar/Context'
 
+import './SignInGoogle.scss'
+
 const useStyles = makeStyles(theme => ({
-  root: {
-    padding: theme.spacing(3, 2)
-  },
   button: {
     margin: theme.spacing(1)
   },
@@ -73,19 +71,22 @@ const SignInGoogle = ({ firebase }) => {
   }
 
   return (
-    <form onSubmit={onSubmit}>
-      <Paper className={`${classes.root} center-content`}>
+    <div className="signin_google">
+      <p className="signin_google__text">
+        or alternatively Sign In with Google!
+      </p>
+      <form onSubmit={onSubmit}>
         <Button
           type="submit"
           variant="contained"
           color="secondary"
           className={classes.button}
         >
-          <Group className={classes.leftIcon}>send</Group>
+          <Group className={classes.leftIcon} />
           Sign In with Google
         </Button>
-      </Paper>
-    </form>
+      </form>
+    </div>
   )
 }
 

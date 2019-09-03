@@ -1,11 +1,5 @@
 import React from 'react'
 
-const defaultState = {
-  show: false,
-  type: 'succes',
-  displayText: ''
-}
-
-const SnackbarContext = React.createContext(defaultState)
+const SnackbarContext = React.createContext()
 
 export default SnackbarContext

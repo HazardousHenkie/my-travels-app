@@ -26,6 +26,7 @@ function getSteps() {
 }
 
 function getStepContent(step) {
+  // set state here and not with context?
   switch (step) {
     case 0:
       return <AddStep1 />
