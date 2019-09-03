@@ -9,6 +9,7 @@ import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import * as Yup from 'yup'
 import SnackbarContext from '../../components/Snackbar/Context'
+import { withFirebase } from '../../components/Firebase'
 
 const LocationsScheme = Yup.object().shape({
   location: Yup.string().required('Required'),
@@ -65,6 +66,10 @@ const AddStep1 = ({ firebase }) => {
                     location,
                     description
                   })
+                  .then(snap => {
+                    const { key } = snap
+                    console.log(key)
+                  })
 
                 setSubmitting(false)
 
@@ -73,7 +78,7 @@ const AddStep1 = ({ firebase }) => {
                   variant: 'success'
                 })
               } catch (error) {
-                setSnackbarState({ message: error, variant: 'error' })
+                setSnackbarState({ message: error.message, variant: 'error' })
                 setSubmitting(false)
               }
             }}
@@ -125,4 +130,4 @@ const AddStep1 = ({ firebase }) => {
   )
 }
 
-export default AddStep1
+export default withFirebase(AddStep1)
