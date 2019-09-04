@@ -21,42 +21,48 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function getSteps() {
-  return ['Where did you go?', 'Add an image!', 'Create an ad']
+const GetSteps = () => {
+  return ['Where did you go?', 'SHow us where you went!', 'Preview']
 }
 
-function getStepContent(step) {
-  // set state here and not with context?
+const GetStepContent = step => {
+  const [location, setLocation] = useState({
+    id: '',
+    title: '',
+    description: ''
+  })
+
   switch (step) {
     case 0:
-      return <AddStep1 />
+      return <AddStep1 setLocation={setLocation} />
     case 1:
-      return <AddStep2 />
+      return <AddStep2 location={location} />
     case 2:
+      // show preview here and don't have to other buttons like save save later
       return 'This is the bit I really care about!'
     default:
       return 'Unknown step'
   }
 }
 
-export default function HorizontalLinearStepper() {
+const HorizontalLinearStepper = () => {
   const classes = useStyles()
   const [activeStep, setActiveStep] = useState(0)
   const [skipped, setSkipped] = useState(new Set())
-  const steps = getSteps()
+  const steps = GetSteps()
 
-  function isStepOptional(step) {
+  const IsStepOptional = step => {
     return step === 1
   }
 
-  function isStepSkipped(step) {
+  const IsStepSkipped = step => {
     return skipped.has(step)
   }
 
-  function handleNext() {
+  const HandleNext = () => {
     let newSkipped = skipped
 
-    if (isStepSkipped(activeStep)) {
+    if (IsStepSkipped(activeStep)) {
       newSkipped = new Set(newSkipped.values())
       newSkipped.delete(activeStep)
     }
@@ -65,12 +71,12 @@ export default function HorizontalLinearStepper() {
     setSkipped(newSkipped)
   }
 
-  function handleBack() {
+  const HandleBack = () => {
     setActiveStep(prevActiveStep => prevActiveStep - 1)
   }
 
-  function handleSkip() {
-    if (!isStepOptional(activeStep)) {
+  const HandleSkip = () => {
+    if (!IsStepOptional(activeStep)) {
       throw new Error("You can't skip a step that isn't optional.")
     }
 
@@ -84,7 +90,7 @@ export default function HorizontalLinearStepper() {
     })
   }
 
-  function handleReset() {
+  const HandleReset = () => {
     setActiveStep(0)
   }
 
@@ -95,13 +101,13 @@ export default function HorizontalLinearStepper() {
           const stepProps = {}
           const labelProps = {}
 
-          if (isStepOptional(index)) {
+          if (IsStepOptional(index)) {
             labelProps.optional = (
               <Typography variant="caption">Optional</Typography>
             )
           }
 
-          if (isStepSkipped(index)) {
+          if (IsStepSkipped(index)) {
             stepProps.completed = false
           }
 
@@ -119,28 +125,28 @@ export default function HorizontalLinearStepper() {
             <Typography className={classes.instructions}>
               All steps completed - you&apos;re finished
             </Typography>
-            <Button onClick={handleReset} className={classes.button}>
+            <Button onClick={HandleReset} className={classes.button}>
               Reset
             </Button>
           </div>
         ) : (
           <div>
             <div className={classes.instructions}>
-              {getStepContent(activeStep)}
+              {GetStepContent(activeStep)}
             </div>
             <div>
               <Button
                 disabled={activeStep === 0}
-                onClick={handleBack}
+                onClick={HandleBack}
                 className={classes.button}
               >
                 Back
               </Button>
-              {isStepOptional(activeStep) && (
+              {IsStepOptional(activeStep) && (
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={handleSkip}
+                  onClick={HandleSkip}
                   className={classes.button}
                 >
                   Skip
@@ -150,7 +156,7 @@ export default function HorizontalLinearStepper() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={handleNext}
+                onClick={HandleNext}
                 className={classes.button}
               >
                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
@@ -162,3 +168,5 @@ export default function HorizontalLinearStepper() {
     </div>
   )
 }
+
+export default HorizontalLinearStepper

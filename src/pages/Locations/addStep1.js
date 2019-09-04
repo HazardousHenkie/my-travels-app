@@ -32,10 +32,12 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const AddStep1 = ({ firebase }) => {
+const AddStep1 = ({ firebase, setLocation }) => {
   const classes = useStyles()
   const { setSnackbarState } = useContext(SnackbarContext)
   const { userId } = useSelector(state => state.user)
+
+  //use effect to get initial state if possible?
 
   return (
     <div className="locations_add_step_one">
@@ -66,9 +68,14 @@ const AddStep1 = ({ firebase }) => {
                     location,
                     description
                   })
-                  .then(snap => {
-                    const { key } = snap
-                    console.log(key)
+                  .then(snapshot => {
+                    const { key } = snapshot
+
+                    setLocation({
+                      id: key,
+                      title: location,
+                      description
+                    })
                   })
 
                 setSubmitting(false)

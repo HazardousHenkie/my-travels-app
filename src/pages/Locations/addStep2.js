@@ -13,13 +13,15 @@ const useStyles = makeStyles({
   }
 })
 
-const AddStep2 = ({ firebase }) => {
+const AddStep2 = ({ firebase, location }) => {
   const classes = useStyles()
   const [files, setFiles] = useState([])
   const [uploadedFile, setUploadedFile] = useState('')
   const [finishedRequest, setFinishedRequest] = useState(false)
   const userId = useSelector(state => state.user.userId)
   const { setSnackbarState } = useContext(SnackbarContext)
+
+  console.log(location)
 
   useEffect(() => {
     const unsubscribe = firebase
