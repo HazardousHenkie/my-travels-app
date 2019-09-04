@@ -50,7 +50,7 @@ const Profile = ({ firebase }) => {
 
   const [multi, setMulti] = React.useState(countries)
 
-  function handleChangeMulti(value) {
+  const HandleChangeMulti = value => {
     setMulti(value)
   }
 
@@ -160,7 +160,7 @@ const Profile = ({ firebase }) => {
 
                 <CountrySelect
                   multi={multi}
-                  handleChangeMulti={handleChangeMulti}
+                  handleChangeMulti={HandleChangeMulti}
                 />
 
                 <Button

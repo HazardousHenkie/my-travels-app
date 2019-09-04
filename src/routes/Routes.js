@@ -8,7 +8,7 @@ import SignUp from '../pages/SignUp'
 import ForgotPassword from '../pages/ForgotPassword'
 import * as routes from '../constants/routes'
 
-function Routes() {
+const Routes = () => {
   return (
     <Switch>
       <Route path={routes.home} exact component={Home} />

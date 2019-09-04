@@ -141,7 +141,7 @@ const Placeholder = props => {
   )
 }
 
-function ValueContainer(props) {
+const ValueContainer = props => {
   const { selectProps, children } = props
   return <div className={selectProps.classes.valueContainer}>{children}</div>
 }
@@ -197,7 +197,7 @@ const IntegrationReactSelect = ({ multi, handleChangeMulti }) => {
   const [suggestions, setSuggestions] = React.useState(null)
 
   useEffect(() => {
-    async function fetchCountries() {
+    async function FetchCountries() {
       const response = await axios.get('https://restcountries.eu/rest/v2/all')
       const suggestionsResponse = response.data.map(suggestion => ({
         value: suggestion.name,
@@ -206,7 +206,7 @@ const IntegrationReactSelect = ({ multi, handleChangeMulti }) => {
 
       setSuggestions(suggestionsResponse)
     }
-    fetchCountries()
+    FetchCountries()
   }, [])
 
   return (
