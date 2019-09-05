@@ -12,7 +12,7 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
-const ImageUpload = ({ firebase, intialFiles, initialFile }) => {
+const ImageUpload = ({ firebase, dbRef, intialFiles, initialFile }) => {
   const [files, setFiles] = useState(intialFiles)
   const [uploadedFile, setUploadedFile] = useState(initialFile)
   const userId = useSelector(state => state.user.userId)
@@ -27,10 +27,8 @@ const ImageUpload = ({ firebase, intialFiles, initialFile }) => {
     imageRef
       .delete()
       .then(() => {
-        firebase
-          .imagesUser()
-          .child(userId)
-          .remove()
+        // user id or ref id
+        dbRef.child(userId).remove()
 
         load()
       })
@@ -77,12 +75,10 @@ const ImageUpload = ({ firebase, intialFiles, initialFile }) => {
                 uploadTask.snapshot.ref
                   .getDownloadURL()
                   .then(downloadURL => {
-                    firebase
-                      .imagesUser()
-                      .child(userId)
-                      .set({
-                        downloadURL
-                      })
+                    console.log(dbRef)
+                    dbRef.child(userId).set({
+                      downloadURL
+                    })
 
                     setUploadedFile(downloadURL)
                     setSnackbarState({
@@ -91,7 +87,10 @@ const ImageUpload = ({ firebase, intialFiles, initialFile }) => {
                     })
                   })
                   .catch(userError => {
-                    setSnackbarState({ message: userError, variant: 'error' })
+                    setSnackbarState({
+                      message: userError.message,
+                      variant: 'error'
+                    })
                   })
 
                 load()

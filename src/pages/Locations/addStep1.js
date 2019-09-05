@@ -32,12 +32,11 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const AddStep1 = ({ firebase, setLocation }) => {
+const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
   const classes = useStyles()
   const { setSnackbarState } = useContext(SnackbarContext)
   const { userId } = useSelector(state => state.user)
-
-  //use effect to get initial state if possible?
+  const { title, message } = initialLocation
 
   return (
     <div className="locations_add_step_one">
@@ -53,8 +52,8 @@ const AddStep1 = ({ firebase, setLocation }) => {
 
           <Formik
             initialValues={{
-              location: '',
-              description: ''
+              location: title,
+              description: message
             }}
             validationSchema={LocationsScheme}
             onSubmit={(values, { setSubmitting }) => {
@@ -74,10 +73,11 @@ const AddStep1 = ({ firebase, setLocation }) => {
                     setLocation({
                       id: key,
                       title: location,
-                      description
+                      message: description
                     })
                   })
 
+                setEdit(true)
                 setSubmitting(false)
 
                 setSnackbarState({

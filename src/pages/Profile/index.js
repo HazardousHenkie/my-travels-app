@@ -180,7 +180,11 @@ const Profile = ({ firebase }) => {
         </Grid>
         <Grid item xs={6}>
           {finishedRequest && (
-            <ImageUpload intialFiles={files} initialFile={uploadedFile} />
+            <ImageUpload
+              dbRef={firebase.imagesUser()}
+              intialFiles={files}
+              initialFile={uploadedFile}
+            />
           )}
         </Grid>
       </Grid>
