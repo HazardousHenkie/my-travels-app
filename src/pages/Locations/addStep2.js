@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { useSelector } from 'react-redux'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
@@ -13,20 +12,19 @@ const useStyles = makeStyles({
   }
 })
 
-const AddStep2 = ({ firebase, location }) => {
+const AddStep2 = ({ firebase, initialLocation }) => {
   const classes = useStyles()
   const [files, setFiles] = useState([])
   const [uploadedFile, setUploadedFile] = useState('')
   const [finishedRequest, setFinishedRequest] = useState(false)
-  const userId = useSelector(state => state.user.userId)
   const { setSnackbarState } = useContext(SnackbarContext)
+  const { id } = initialLocation
 
-  console.log(location)
-
+  // if first time don't check db
   useEffect(() => {
     const unsubscribe = firebase
-      .imagesUser()
-      .child(userId)
+      .imageLocation()
+      .child(id)
       .once('value', snapshot => {
         if (snapshot.val() !== null) {
           setFiles([
@@ -47,7 +45,7 @@ const AddStep2 = ({ firebase, location }) => {
         setSnackbarState({ message: removeError, variant: 'error' })
       })
     return () => unsubscribe
-  }, [firebase, setSnackbarState, userId])
+  }, [firebase, setSnackbarState, id])
 
   return (
     <div className="locations_add_step_one">
@@ -61,7 +59,11 @@ const AddStep2 = ({ firebase, location }) => {
             </header>
           </div>
           {finishedRequest && (
-            <ImageUpload intialFiles={files} initialFile={uploadedFile} />
+            <ImageUpload
+              dbRef={firebase.imageLocation()}
+              intialFiles={files}
+              initialFile={uploadedFile}
+            />
           )}
         </Grid>
       </Grid>

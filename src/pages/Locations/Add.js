@@ -21,34 +21,42 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const GetSteps = () => {
-  return ['Where did you go?', 'SHow us where you went!', 'Preview']
-}
-
-const GetStepContent = step => {
-  const [location, setLocation] = useState({
-    id: '',
-    title: '',
-    description: ''
-  })
-
-  switch (step) {
-    case 0:
-      return <AddStep1 setLocation={setLocation} />
-    case 1:
-      return <AddStep2 location={location} />
-    case 2:
-      // show preview here and don't have to other buttons like save save later
-      return 'This is the bit I really care about!'
-    default:
-      return 'Unknown step'
-  }
-}
-
 const HorizontalLinearStepper = () => {
   const classes = useStyles()
   const [activeStep, setActiveStep] = useState(0)
   const [skipped, setSkipped] = useState(new Set())
+  const [edit, setEdit] = useState(false)
+
+  const GetSteps = () => {
+    return ['Where did you go?', 'Show us where you went!', 'Preview']
+  }
+
+  const GetStepContent = step => {
+    const [location, setLocation] = useState({
+      id: '',
+      title: '',
+      description: ''
+    })
+
+    switch (step) {
+      case 0:
+        return (
+          <AddStep1
+            setEdit={setEdit}
+            setLocation={setLocation}
+            initialLocation={location}
+          />
+        )
+      case 1:
+        return <AddStep2 initialLocation={location} />
+      case 2:
+        // show preview here and don't have to other buttons like save save later
+        return 'This is the bit I really care about!'
+      default:
+        return 'Unknown step'
+    }
+  }
+
   const steps = GetSteps()
 
   const IsStepOptional = step => {
@@ -154,6 +162,7 @@ const HorizontalLinearStepper = () => {
               )}
 
               <Button
+                disabled={!edit}
                 variant="contained"
                 color="primary"
                 onClick={HandleNext}
