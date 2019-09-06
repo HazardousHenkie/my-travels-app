@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { compose } from 'recompose'
 import Grid from '@material-ui/core/Grid'
@@ -41,15 +41,44 @@ const Profile = ({ firebase }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { setSnackbarState } = useContext(SnackbarContext)
+  const [files, setFiles] = useState([])
+  const [uploadedFile, setUploadedFile] = useState('')
+  const [finishedRequest, setFinishedRequest] = useState(false)
   const { userId, userName, userDescription, countries } = useSelector(
     state => state.user
   )
 
   const [multi, setMulti] = React.useState(countries)
 
-  function handleChangeMulti(value) {
+  const HandleChangeMulti = value => {
     setMulti(value)
   }
+
+  useEffect(() => {
+    const unsubscribe = firebase
+      .imagesUser()
+      .child(userId)
+      .once('value', snapshot => {
+        if (snapshot.val() !== null) {
+          setFiles([
+            {
+              source: snapshot.val().downloadURL,
+              options: {
+                type: 'local'
+              }
+            }
+          ])
+
+          setUploadedFile(snapshot.val().downloadURL)
+        }
+
+        setFinishedRequest(true)
+      })
+      .catch(removeError => {
+        setSnackbarState({ message: removeError, variant: 'error' })
+      })
+    return () => unsubscribe
+  }, [firebase, setSnackbarState, userId])
 
   return (
     <div className="profile">
@@ -131,7 +160,7 @@ const Profile = ({ firebase }) => {
 
                 <CountrySelect
                   multi={multi}
-                  handleChangeMulti={handleChangeMulti}
+                  handleChangeMulti={HandleChangeMulti}
                 />
 
                 <Button
@@ -150,7 +179,13 @@ const Profile = ({ firebase }) => {
           </Formik>
         </Grid>
         <Grid item xs={6}>
-          <ImageUpload />
+          {finishedRequest && (
+            <ImageUpload
+              dbRef={firebase.imagesUser()}
+              intialFiles={files}
+              initialFile={uploadedFile}
+            />
+          )}
         </Grid>
       </Grid>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { useSelector } from 'react-redux'
 import shortid from 'shortid'
 import { FilePond, registerPlugin } from 'react-filepond'
@@ -12,36 +12,30 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
-const ImageUpload = ({ firebase }) => {
-  const [files, setFiles] = useState([])
-  const [uploadedFile, setUploadedFile] = useState('')
+const ImageUpload = ({ firebase, dbRef, intialFiles, initialFile }) => {
+  const [files, setFiles] = useState(intialFiles)
+  const [uploadedFile, setUploadedFile] = useState(initialFile)
   const userId = useSelector(state => state.user.userId)
   const { setSnackbarState } = useContext(SnackbarContext)
 
-  useEffect(() => {
-    const unsubscribe = firebase
-      .imagesUser()
-      .child(userId)
-      .once('value', snapshot => {
-        if (snapshot.val() !== null) {
-          setFiles([
-            {
-              source: snapshot.val().downloadURL,
-              options: {
-                type: 'local'
-              }
-            }
-          ])
+  const removeImage = load => {
+    const imageRef = firebase
+      .firebase()
+      .storage()
+      .refFromURL(uploadedFile)
 
-          setUploadedFile(snapshot.val().downloadURL)
-        }
+    imageRef
+      .delete()
+      .then(() => {
+        // user id or ref id
+        dbRef.child(userId).remove()
+
+        load()
       })
       .catch(removeError => {
         setSnackbarState({ message: removeError, variant: 'error' })
       })
-
-    return () => unsubscribe
-  }, [firebase, userId, setSnackbarState])
+  }
 
   return (
     <div className="imageUpload">
@@ -81,12 +75,10 @@ const ImageUpload = ({ firebase }) => {
                 uploadTask.snapshot.ref
                   .getDownloadURL()
                   .then(downloadURL => {
-                    firebase
-                      .imagesUser()
-                      .child(userId)
-                      .set({
-                        downloadURL
-                      })
+                    console.log(dbRef)
+                    dbRef.child(userId).set({
+                      downloadURL
+                    })
 
                     setUploadedFile(downloadURL)
                     setSnackbarState({
@@ -95,7 +87,10 @@ const ImageUpload = ({ firebase }) => {
                     })
                   })
                   .catch(userError => {
-                    setSnackbarState({ message: userError, variant: 'error' })
+                    setSnackbarState({
+                      message: userError.message,
+                      variant: 'error'
+                    })
                   })
 
                 load()
@@ -114,25 +109,11 @@ const ImageUpload = ({ firebase }) => {
             xhr.open('GET', source)
             xhr.send()
           },
+          remove: (uniqueFileId, load) => {
+            removeImage(load)
+          },
           revert: (uniqueFileId, load) => {
-            const imageRef = firebase
-              .firebase()
-              .storage()
-              .refFromURL(uploadedFile)
-
-            imageRef
-              .delete()
-              .then(() => {
-                firebase
-                  .imagesUser()
-                  .child(userId)
-                  .remove()
-
-                load()
-              })
-              .catch(removeError => {
-                setSnackbarState({ message: removeError, variant: 'error' })
-              })
+            removeImage(load)
           }
         }}
       />

@@ -65,16 +65,16 @@ const MainMenu = () => {
           </Button>
         )}
 
-        {/* {authenticated > 0 && (
+        {authenticated > 0 && (
           <Button
             component={LinkRef}
-            to={routes.locations}
             className={classes.button}
+            to={routes.locations}
             color="inherit"
           >
             My Locations
           </Button>
-        )} */}
+        )}
 
         {authenticated > 0 && (
           <Button
