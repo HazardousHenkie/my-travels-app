@@ -7,7 +7,8 @@ import Add from './Add'
 
 const useStyles = makeStyles(() => ({
   title: {
-    flexGrow: 1
+    flexGrow: 1,
+    margin: '15px 0'
   }
 }))
 

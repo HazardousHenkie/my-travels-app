@@ -8,7 +8,8 @@ import { withFirebase } from '../../components/Firebase'
 
 const useStyles = makeStyles({
   title: {
-    flexGrow: 1
+    flexGrow: 1,
+    paddingBottom: '15px'
   }
 })
 
@@ -25,8 +26,6 @@ const AddStep2 = ({ firebase, step2Props }) => {
   const [finishedRequest, setFinishedRequest] = useState(false)
   const { setSnackbarState } = useContext(SnackbarContext)
   const { id } = initialLocation
-
-  console.log('step2', uploadedFile)
 
   useEffect(() => {
     if (!initialSetup) {
