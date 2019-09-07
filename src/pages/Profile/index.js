@@ -80,6 +80,13 @@ const Profile = ({ firebase }) => {
     return () => unsubscribe
   }, [firebase, setSnackbarState, userId])
 
+  const imageProps = {
+    dbId: userId,
+    dbRef: firebase.imagesUser(),
+    intialFiles: files,
+    initialFile: uploadedFile
+  }
+
   return (
     <div className="profile">
       <Grid container spacing={2}>
@@ -179,13 +186,7 @@ const Profile = ({ firebase }) => {
           </Formik>
         </Grid>
         <Grid item xs={6}>
-          {finishedRequest && (
-            <ImageUpload
-              dbRef={firebase.imagesUser()}
-              intialFiles={files}
-              initialFile={uploadedFile}
-            />
-          )}
+          {finishedRequest && <ImageUpload imageProps={imageProps} />}
         </Grid>
       </Grid>
     </div>

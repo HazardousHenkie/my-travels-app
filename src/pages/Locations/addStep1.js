@@ -20,10 +20,6 @@ const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1
   },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1)
-  },
   button: {
     margin: theme.spacing(1)
   },
@@ -97,7 +93,6 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
                   name="location"
                   label="location"
                   component={TextField}
-                  className={classes.textField}
                   variant="outlined"
                   margin="normal"
                   fullWidth
@@ -108,7 +103,6 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
                   name="description"
                   label="Introduction"
                   component={TextField}
-                  className={classes.textField}
                   multiline
                   rows={6}
                   rowsMax={8}
