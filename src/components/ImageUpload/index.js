@@ -10,9 +10,16 @@ import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
-
+// remove uploadedfile when deleted
 const ImageUpload = ({ firebase, imageProps }) => {
-  const { intialFiles, initialFile, dbRef, dbId, setInitialSetup } = imageProps
+  const {
+    intialFiles,
+    initialFile,
+    dbRef,
+    dbId,
+    setInitialSetup,
+    setLoadedFile
+  } = imageProps
   const [files, setFiles] = useState(intialFiles)
   const [uploadedFile, setUploadedFile] = useState(initialFile)
   const { setSnackbarState } = useContext(SnackbarContext)
@@ -27,6 +34,10 @@ const ImageUpload = ({ firebase, imageProps }) => {
       .delete()
       .then(() => {
         dbRef.child(dbId).remove()
+        setUploadedFile()
+        if (setLoadedFile !== undefined) {
+          setLoadedFile()
+        }
 
         load()
       })
@@ -83,7 +94,9 @@ const ImageUpload = ({ firebase, imageProps }) => {
                       variant: 'success'
                     })
 
-                    setInitialSetup(false)
+                    if (setInitialSetup !== undefined) {
+                      setInitialSetup(false)
+                    }
                   })
                   .catch(userError => {
                     setSnackbarState({

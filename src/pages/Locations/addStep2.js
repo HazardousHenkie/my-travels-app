@@ -16,7 +16,7 @@ const useStyles = makeStyles({
 const AddStep2 = ({ firebase, step2Props }) => {
   const classes = useStyles()
   const {
-    setUploadedFile,
+    setLoadedFile,
     uploadedFile,
     initialLocation,
     initialSetup,
@@ -43,7 +43,7 @@ const AddStep2 = ({ firebase, step2Props }) => {
               }
             ])
 
-            setUploadedFile(snapshot.val().downloadURL)
+            setLoadedFile(snapshot.val().downloadURL)
           }
 
           setFinishedRequest(true)
@@ -61,7 +61,7 @@ const AddStep2 = ({ firebase, step2Props }) => {
     id,
     initialSetup,
     setInitialSetup,
-    setUploadedFile
+    setLoadedFile
   ])
 
   const imageProps = {
@@ -69,7 +69,8 @@ const AddStep2 = ({ firebase, step2Props }) => {
     dbRef: firebase.imageLocation(),
     intialFiles: files,
     initialFile: uploadedFile,
-    setInitialSetup
+    setInitialSetup,
+    setLoadedFile
   }
 
   return (
