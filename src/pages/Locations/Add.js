@@ -44,13 +44,13 @@ const HorizontalLinearStepper = () => {
     imageURL: ''
   })
   const [initialSetup, setInitialSetup] = useState(true)
-  const [uploadedFile, setUploadedFile] = useState('')
+  const [uploadedFile, setLoadedFile] = useState('')
   const steps = GetSteps()
 
   const GetStepContent = step => {
     const step2Props = {
       uploadedFile,
-      setUploadedFile,
+      setLoadedFile,
       initialLocation: location,
       initialSetup,
       setInitialSetup
@@ -121,7 +121,7 @@ const HorizontalLinearStepper = () => {
       description: '',
       imageURL: ''
     })
-    setUploadedFile('')
+    setLoadedFile('')
     setEdit(false)
     setInitialSetup(true)
   }

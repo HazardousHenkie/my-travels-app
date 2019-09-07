@@ -82,7 +82,7 @@ const Profile = ({ firebase }) => {
 
   const imageProps = {
     dbId: userId,
-    dbRef: firebase.imageLocation(),
+    dbRef: firebase.imagesUser(),
     intialFiles: files,
     initialFile: uploadedFile
   }
