@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react'
-import { useSelector } from 'react-redux'
 import shortid from 'shortid'
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
@@ -12,10 +11,10 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
 
-const ImageUpload = ({ firebase, dbRef, intialFiles, initialFile }) => {
+const ImageUpload = ({ firebase, imageProps }) => {
+  const { intialFiles, initialFile, dbRef, dbId, setInitialSetup } = imageProps
   const [files, setFiles] = useState(intialFiles)
   const [uploadedFile, setUploadedFile] = useState(initialFile)
-  const userId = useSelector(state => state.user.userId)
   const { setSnackbarState } = useContext(SnackbarContext)
 
   const removeImage = load => {
@@ -27,8 +26,7 @@ const ImageUpload = ({ firebase, dbRef, intialFiles, initialFile }) => {
     imageRef
       .delete()
       .then(() => {
-        // user id or ref id
-        dbRef.child(userId).remove()
+        dbRef.child(dbId).remove()
 
         load()
       })
@@ -75,8 +73,7 @@ const ImageUpload = ({ firebase, dbRef, intialFiles, initialFile }) => {
                 uploadTask.snapshot.ref
                   .getDownloadURL()
                   .then(downloadURL => {
-                    console.log(dbRef)
-                    dbRef.child(userId).set({
+                    dbRef.child(dbId).set({
                       downloadURL
                     })
 
@@ -85,6 +82,8 @@ const ImageUpload = ({ firebase, dbRef, intialFiles, initialFile }) => {
                       message: 'Image uploaded!',
                       variant: 'success'
                     })
+
+                    setInitialSetup(false)
                   })
                   .catch(userError => {
                     setSnackbarState({

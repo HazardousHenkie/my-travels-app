@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import AddStep1 from './addStep1'
 import AddStep2 from './addStep2'
+import PreviewStep from './PreviewStep'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,6 +27,8 @@ const HorizontalLinearStepper = () => {
   const [activeStep, setActiveStep] = useState(0)
   const [skipped, setSkipped] = useState(new Set())
   const [edit, setEdit] = useState(false)
+  const [initialSetup, setInitialSetup] = useState(true)
+  const [uploadedFile, setUploadedFile] = useState('')
 
   const GetSteps = () => {
     return ['Where did you go?', 'Show us where you went!', 'Preview']
@@ -35,8 +38,18 @@ const HorizontalLinearStepper = () => {
     const [location, setLocation] = useState({
       id: '',
       title: '',
-      description: ''
+      description: '',
+      imageURL: ''
     })
+
+    console.log('add', uploadedFile)
+    const step2Props = {
+      uploadedFile,
+      setUploadedFile,
+      initialLocation: location,
+      initialSetup,
+      setInitialSetup
+    }
 
     switch (step) {
       case 0:
@@ -48,10 +61,9 @@ const HorizontalLinearStepper = () => {
           />
         )
       case 1:
-        return <AddStep2 initialLocation={location} />
+        return <AddStep2 step2Props={step2Props} />
       case 2:
-        // show preview here and don't have to other buttons like save save later
-        return 'This is the bit I really care about!'
+        return <PreviewStep location={location} uploadedFile={uploadedFile} />
       default:
         return 'Unknown step'
     }

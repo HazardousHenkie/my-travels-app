@@ -12,40 +12,66 @@ const useStyles = makeStyles({
   }
 })
 
-const AddStep2 = ({ firebase, initialLocation }) => {
+const AddStep2 = ({ firebase, step2Props }) => {
   const classes = useStyles()
+  const {
+    setUploadedFile,
+    uploadedFile,
+    initialLocation,
+    initialSetup,
+    setInitialSetup
+  } = step2Props
   const [files, setFiles] = useState([])
-  const [uploadedFile, setUploadedFile] = useState('')
   const [finishedRequest, setFinishedRequest] = useState(false)
   const { setSnackbarState } = useContext(SnackbarContext)
   const { id } = initialLocation
 
-  // if first time don't check db
+  console.log('step2', uploadedFile)
+
   useEffect(() => {
-    const unsubscribe = firebase
-      .imageLocation()
-      .child(id)
-      .once('value', snapshot => {
-        if (snapshot.val() !== null) {
-          setFiles([
-            {
-              source: snapshot.val().downloadURL,
-              options: {
-                type: 'local'
+    if (!initialSetup) {
+      const unsubscribe = firebase
+        .imageLocation()
+        .child(id)
+        .once('value', snapshot => {
+          if (snapshot.val() !== null) {
+            setFiles([
+              {
+                source: snapshot.val().downloadURL,
+                options: {
+                  type: 'local'
+                }
               }
-            }
-          ])
+            ])
 
-          setUploadedFile(snapshot.val().downloadURL)
-        }
+            setUploadedFile(snapshot.val().downloadURL)
+          }
 
-        setFinishedRequest(true)
-      })
-      .catch(removeError => {
-        setSnackbarState({ message: removeError, variant: 'error' })
-      })
-    return () => unsubscribe
-  }, [firebase, setSnackbarState, id])
+          setFinishedRequest(true)
+        })
+        .catch(removeError => {
+          setSnackbarState({ message: removeError, variant: 'error' })
+        })
+      return () => unsubscribe
+    }
+    setFinishedRequest(true)
+    return () => null
+  }, [
+    firebase,
+    setSnackbarState,
+    id,
+    initialSetup,
+    setInitialSetup,
+    setUploadedFile
+  ])
+
+  const imageProps = {
+    dbId: id,
+    dbRef: firebase.imageLocation(),
+    intialFiles: files,
+    initialFile: uploadedFile,
+    setInitialSetup
+  }
 
   return (
     <div className="locations_add_step_one">
@@ -58,13 +84,7 @@ const AddStep2 = ({ firebase, initialLocation }) => {
               </Typography>
             </header>
           </div>
-          {finishedRequest && (
-            <ImageUpload
-              dbRef={firebase.imageLocation()}
-              intialFiles={files}
-              initialFile={uploadedFile}
-            />
-          )}
+          {finishedRequest && <ImageUpload imageProps={imageProps} />}
         </Grid>
       </Grid>
     </div>
