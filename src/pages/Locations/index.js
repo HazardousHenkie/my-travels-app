@@ -4,6 +4,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import { WithAuthorization } from '../../components/Authentication'
 import Add from './Add'
+import Locations from './Locations'
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -12,18 +13,18 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const Locations = () => {
+const LocationsIndex = () => {
   const classes = useStyles()
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <div className="About">
-          <header className="about_header">
+        <div className="locations_index">
+          <header className="locations_index__header">
             <Typography variant="h5" component="h2" className={classes.title}>
               My Locations
             </Typography>
-
+            <Locations />
             <Add />
           </header>
         </div>
@@ -32,4 +33,4 @@ const Locations = () => {
   )
 }
 
-export default WithAuthorization(Locations)
+export default WithAuthorization(LocationsIndex)
