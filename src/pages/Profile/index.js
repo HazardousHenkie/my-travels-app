@@ -56,10 +56,12 @@ const Profile = ({ firebase }) => {
 
   useEffect(() => {
     const unsubscribe = firebase
-      .imagesUser()
-      .child(userId)
+      .user(userId)
       .once('value', snapshot => {
-        if (snapshot.val() !== null) {
+        if (
+          snapshot.val() !== null &&
+          snapshot.val().downloadURL !== undefined
+        ) {
           setFiles([
             {
               source: snapshot.val().downloadURL,
@@ -82,7 +84,7 @@ const Profile = ({ firebase }) => {
 
   const imageProps = {
     dbId: userId,
-    dbRef: firebase.imagesUser(),
+    dbRef: firebase.user(userId),
     intialFiles: files,
     initialFile: uploadedFile
   }

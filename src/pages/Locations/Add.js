@@ -13,9 +13,6 @@ import AddStep2 from './addStep2'
 import PreviewStep from './PreviewStep'
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    width: '90%'
-  },
   rootPaper: {
     padding: theme.spacing(3, 2)
   },
@@ -121,13 +118,14 @@ const HorizontalLinearStepper = () => {
       description: '',
       imageURL: ''
     })
+
     setLoadedFile('')
     setEdit(false)
     setInitialSetup(true)
   }
 
   return (
-    <div className={classes.root}>
+    <div className="location_add">
       <Paper className={`${classes.rootPaper} center-content`}>
         <Stepper activeStep={activeStep}>
           {steps.map((label, index) => {

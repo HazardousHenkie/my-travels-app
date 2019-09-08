@@ -10,13 +10,11 @@ import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
-// remove uploadedfile when deleted
 const ImageUpload = ({ firebase, imageProps }) => {
   const {
     intialFiles,
     initialFile,
     dbRef,
-    dbId,
     setInitialSetup,
     setLoadedFile
   } = imageProps
@@ -33,8 +31,10 @@ const ImageUpload = ({ firebase, imageProps }) => {
     imageRef
       .delete()
       .then(() => {
-        dbRef.child(dbId).remove()
         setUploadedFile()
+
+        dbRef.child('downloadURL').remove()
+
         if (setLoadedFile !== undefined) {
           setLoadedFile()
         }
@@ -84,9 +84,7 @@ const ImageUpload = ({ firebase, imageProps }) => {
                 uploadTask.snapshot.ref
                   .getDownloadURL()
                   .then(downloadURL => {
-                    dbRef.child(dbId).set({
-                      downloadURL
-                    })
+                    dbRef.update({ downloadURL })
 
                     setUploadedFile(downloadURL)
                     setSnackbarState({
