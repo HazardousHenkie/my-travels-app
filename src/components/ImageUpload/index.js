@@ -10,7 +10,6 @@ import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
-// remove uploadedfile when deleted
 const ImageUpload = ({ firebase, imageProps }) => {
   const {
     intialFiles,
