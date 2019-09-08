@@ -15,7 +15,6 @@ const ImageUpload = ({ firebase, imageProps }) => {
     intialFiles,
     initialFile,
     dbRef,
-    dbId,
     setInitialSetup,
     setLoadedFile
   } = imageProps
@@ -32,8 +31,10 @@ const ImageUpload = ({ firebase, imageProps }) => {
     imageRef
       .delete()
       .then(() => {
-        dbRef.child(dbId).remove()
         setUploadedFile()
+
+        dbRef.child('downloadURL').remove()
+
         if (setLoadedFile !== undefined) {
           setLoadedFile()
         }
@@ -83,9 +84,7 @@ const ImageUpload = ({ firebase, imageProps }) => {
                 uploadTask.snapshot.ref
                   .getDownloadURL()
                   .then(downloadURL => {
-                    dbRef.child(dbId).set({
-                      downloadURL
-                    })
+                    dbRef.update({ downloadURL })
 
                     setUploadedFile(downloadURL)
                     setSnackbarState({
