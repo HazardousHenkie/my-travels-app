@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { useSelector } from 'react-redux'
+
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
@@ -25,12 +27,14 @@ const AddStep2 = ({ firebase, step2Props }) => {
   const [files, setFiles] = useState([])
   const [finishedRequest, setFinishedRequest] = useState(false)
   const { setSnackbarState } = useContext(SnackbarContext)
+  const { userId } = useSelector(state => state.user)
   const { id } = initialLocation
 
   useEffect(() => {
     if (!initialSetup) {
       const unsubscribe = firebase
-        .imageLocation()
+        .locations()
+        .child(userId)
         .child(id)
         .once('value', snapshot => {
           if (snapshot.val() !== null) {
@@ -61,12 +65,15 @@ const AddStep2 = ({ firebase, step2Props }) => {
     id,
     initialSetup,
     setInitialSetup,
-    setLoadedFile
+    setLoadedFile,
+    userId
   ])
 
   const imageProps = {
-    dbId: id,
-    dbRef: firebase.imageLocation(),
+    dbRef: firebase
+      .locations()
+      .child(userId)
+      .child(id),
     intialFiles: files,
     initialFile: uploadedFile,
     setInitialSetup,
