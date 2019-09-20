@@ -77,7 +77,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
                 setSubmitting(false)
 
                 setSnackbarState({
-                  message: 'Profile was updated!',
+                  message: 'Location was added!',
                   variant: 'success'
                 })
               } catch (error) {

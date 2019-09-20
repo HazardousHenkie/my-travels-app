@@ -6,6 +6,7 @@ import Profile from '../pages/Profile'
 import Locations from '../pages/Locations'
 import SignUp from '../pages/SignUp'
 import ForgotPassword from '../pages/ForgotPassword'
+import Add from '../pages/Locations/Add'
 import * as routes from '../constants/routes'
 
 const Routes = () => {
@@ -17,6 +18,7 @@ const Routes = () => {
       <Route path={routes.locations} exact component={Locations} />
       <Route path={routes.signUp} exact component={SignUp} />
       <Route path={routes.forgotPassword} exact component={ForgotPassword} />
+      <Route path={routes.addLocation} exact component={Add} />
       {/* <Route component={NoMatch} /> */}
     </Switch>
   )
