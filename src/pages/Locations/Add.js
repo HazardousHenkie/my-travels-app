@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles'
 import Stepper from '@material-ui/core/Stepper'
@@ -7,10 +8,13 @@ import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
+import Grid from '@material-ui/core/Grid'
 
 import AddStep1 from './addStep1'
 import AddStep2 from './addStep2'
 import PreviewStep from './PreviewStep'
+
+import * as routes from '../../constants/routes'
 
 const useStyles = makeStyles(theme => ({
   rootPaper: {
@@ -125,80 +129,94 @@ const HorizontalLinearStepper = () => {
   }
 
   return (
-    <div className="location_add">
-      <Paper className={`${classes.rootPaper} center-content`}>
-        <Stepper activeStep={activeStep}>
-          {steps.map((label, index) => {
-            const stepProps = {}
-            const labelProps = {}
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <div className="location_add">
+          <Paper className={`${classes.rootPaper} center-content`}>
+            <Stepper activeStep={activeStep}>
+              {steps.map((label, index) => {
+                const stepProps = {}
+                const labelProps = {}
 
-            if (IsStepOptional(index)) {
-              labelProps.optional = (
-                <Typography variant="caption">Optional</Typography>
-              )
-            }
+                if (IsStepOptional(index)) {
+                  labelProps.optional = (
+                    <Typography variant="caption">Optional</Typography>
+                  )
+                }
 
-            if (IsStepSkipped(index)) {
-              stepProps.completed = false
-            }
+                if (IsStepSkipped(index)) {
+                  stepProps.completed = false
+                }
 
-            return (
-              <Step key={label} {...stepProps}>
-                <StepLabel {...labelProps}>{label}</StepLabel>
-              </Step>
-            )
-          })}
-        </Stepper>
+                return (
+                  <Step key={label} {...stepProps}>
+                    <StepLabel {...labelProps}>{label}</StepLabel>
+                  </Step>
+                )
+              })}
+            </Stepper>
 
-        <div>
-          {activeStep === steps.length ? (
             <div>
-              <Typography className={classes.instructions}>
-                All steps completed - you&apos;re finished!
-              </Typography>
-              <Button onClick={HandleReset} className={classes.button}>
-                Reset
-              </Button>
-            </div>
-          ) : (
-            <div>
-              <div className={classes.instructions}>
-                {GetStepContent(activeStep)}
-              </div>
-              <div>
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={HandleBack}
-                  className={classes.button}
-                >
-                  Back
-                </Button>
-                {IsStepOptional(activeStep) && (
+              {activeStep === steps.length ? (
+                <div>
+                  <Typography className={classes.instructions}>
+                    All steps completed - you&apos;re finished!
+                  </Typography>
+                  <Button onClick={HandleReset} className={classes.button}>
+                    Reset
+                  </Button>
+
                   <Button
+                    component={Link}
+                    className={classes.button}
                     variant="contained"
                     color="primary"
-                    onClick={HandleSkip}
-                    className={classes.button}
+                    to={routes.locations}
                   >
-                    Skip
+                    Locations
                   </Button>
-                )}
+                </div>
+              ) : (
+                <div>
+                  <div className={classes.instructions}>
+                    {GetStepContent(activeStep)}
+                  </div>
+                  <div>
+                    <Button
+                      disabled={activeStep === 0}
+                      onClick={HandleBack}
+                      className={classes.button}
+                    >
+                      Back
+                    </Button>
+                    {IsStepOptional(activeStep) && (
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={HandleSkip}
+                        className={classes.button}
+                      >
+                        Skip
+                      </Button>
+                    )}
 
-                <Button
-                  disabled={!edit}
-                  variant="contained"
-                  color="primary"
-                  onClick={HandleNext}
-                  className={classes.button}
-                >
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </Button>
-              </div>
+                    <Button
+                      disabled={!edit}
+                      variant="contained"
+                      color="primary"
+                      onClick={HandleNext}
+                      className={classes.button}
+                    >
+                      {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </Paper>
         </div>
-      </Paper>
-    </div>
+      </Grid>
+    </Grid>
   )
 }
 
