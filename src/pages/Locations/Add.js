@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { useSelector } from 'react-redux'
+
 import { Link } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -9,6 +11,7 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import AddStep1 from './addStep1'
 import AddStep2 from './addStep2'
@@ -16,9 +19,18 @@ import PreviewStep from './PreviewStep'
 
 import * as routes from '../../constants/routes'
 
+import SnackbarContext from '../../components/Snackbar/Context'
+
+import { withFirebase } from '../../components/Firebase'
+
+import './Add.scss'
+
 const useStyles = makeStyles(theme => ({
   rootPaper: {
     padding: theme.spacing(3, 2)
+  },
+  title: {
+    flexGrow: 1
   },
   button: {
     marginRight: theme.spacing(1)
@@ -33,8 +45,9 @@ const GetSteps = () => {
   return ['Where did you go?', 'Show us where you went!', 'Preview']
 }
 
-const HorizontalLinearStepper = () => {
+const HorizontalLinearStepper = ({ firebase, match }) => {
   const classes = useStyles()
+  const { setSnackbarState } = useContext(SnackbarContext)
   const [activeStep, setActiveStep] = useState(0)
   const [skipped, setSkipped] = useState(new Set())
   const [edit, setEdit] = useState(false)
@@ -46,7 +59,39 @@ const HorizontalLinearStepper = () => {
   })
   const [initialSetup, setInitialSetup] = useState(true)
   const [uploadedFile, setLoadedFile] = useState('')
+  const { userId } = useSelector(state => state.user)
+  const [finishedRequest, setFinishedRequest] = useState(false)
   const steps = GetSteps()
+
+  // add from store and not from url when clicked
+  useEffect(() => {
+    if (match.params.id !== undefined) {
+      const unsubscribe = firebase
+        .locations()
+        .child(userId)
+        .child(match.params.id)
+        .once('value', snapshot => {
+          if (snapshot.val() !== null) {
+            const locationObject = snapshot.val()
+
+            setLocation({
+              id: match.params.id,
+              title: locationObject.location,
+              description: locationObject.description,
+              imageURL: locationObject.downloadURL
+            })
+
+            setFinishedRequest(true)
+          }
+        })
+        .catch(removeError => {
+          setSnackbarState({ message: removeError, variant: 'error' })
+        })
+      return () => unsubscribe
+    }
+    setFinishedRequest(true)
+    return () => null
+  }, [firebase, setSnackbarState, userId, match, initialSetup])
 
   const GetStepContent = step => {
     const step2Props = {
@@ -60,11 +105,13 @@ const HorizontalLinearStepper = () => {
     switch (step) {
       case 0:
         return (
-          <AddStep1
-            setEdit={setEdit}
-            setLocation={setLocation}
-            initialLocation={location}
-          />
+          finishedRequest && (
+            <AddStep1
+              setEdit={setEdit}
+              setLocation={setLocation}
+              initialLocation={location}
+            />
+          )
         )
       case 1:
         return <AddStep2 step2Props={step2Props} />
@@ -132,6 +179,11 @@ const HorizontalLinearStepper = () => {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <div className="location_add">
+          <header className="location_add__header">
+            <Typography variant="h5" component="h2" className={classes.title}>
+              Add/edit location
+            </Typography>
+          </header>
           <Paper className={`${classes.rootPaper} center-content`}>
             <Stepper activeStep={activeStep}>
               {steps.map((label, index) => {
@@ -155,6 +207,10 @@ const HorizontalLinearStepper = () => {
                 )
               })}
             </Stepper>
+
+            {!finishedRequest && (
+              <CircularProgress className="messageLoading" />
+            )}
 
             <div>
               {activeStep === steps.length ? (
@@ -220,4 +276,4 @@ const HorizontalLinearStepper = () => {
   )
 }
 
-export default HorizontalLinearStepper
+export default withFirebase(HorizontalLinearStepper)
