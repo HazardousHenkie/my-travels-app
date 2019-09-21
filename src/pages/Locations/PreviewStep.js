@@ -14,7 +14,7 @@ const useStyles = makeStyles({
 
 const PreviewStep = ({ location, uploadedFile }) => {
   const classes = useStyles()
-  const { title, message } = location
+  const { title, description } = location
 
   return (
     <div className="locations_add_step_one">
@@ -29,7 +29,8 @@ const PreviewStep = ({ location, uploadedFile }) => {
           </div>
 
           <h3 className="location_preview__title">{title}</h3>
-          <p className="location_preview__content">{message}</p>
+          <p className="location_preview__content">{description}</p>
+
           {uploadedFile && (
             <img
               className="location_preview__image"

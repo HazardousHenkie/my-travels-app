@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import AddStep1 from './addStep1'
 import AddStep2 from './addStep2'
@@ -22,9 +23,14 @@ import SnackbarContext from '../../components/Snackbar/Context'
 
 import { withFirebase } from '../../components/Firebase'
 
+import './Add.scss'
+
 const useStyles = makeStyles(theme => ({
   rootPaper: {
     padding: theme.spacing(3, 2)
+  },
+  title: {
+    flexGrow: 1
   },
   button: {
     marginRight: theme.spacing(1)
@@ -173,6 +179,11 @@ const HorizontalLinearStepper = ({ firebase, match }) => {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <div className="location_add">
+          <header className="location_add__header">
+            <Typography variant="h5" component="h2" className={classes.title}>
+              Add/edit location
+            </Typography>
+          </header>
           <Paper className={`${classes.rootPaper} center-content`}>
             <Stepper activeStep={activeStep}>
               {steps.map((label, index) => {
@@ -196,6 +207,10 @@ const HorizontalLinearStepper = ({ firebase, match }) => {
                 )
               })}
             </Stepper>
+
+            {!finishedRequest && (
+              <CircularProgress className="messageLoading" />
+            )}
 
             <div>
               {activeStep === steps.length ? (

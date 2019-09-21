@@ -19,7 +19,7 @@ const Routes = () => {
       <Route path={routes.signUp} exact component={SignUp} />
       <Route path={routes.forgotPassword} exact component={ForgotPassword} />
       <Route path={routes.addLocation} exact component={Add} />
-      <Route path={routes.editLocation} exact component={Add} />
+      <Route path={`${routes.editLocation}:id`} exact component={Add} />
       {/* <Route component={NoMatch} /> */}
     </Switch>
   )
