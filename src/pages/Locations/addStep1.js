@@ -41,7 +41,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
           <div className="locations_inner">
             <header className="locations_header">
               <Typography variant="h5" component="h2" className={classes.title}>
-                Add title and content
+                Title and content
               </Typography>
             </header>
           </div>
@@ -57,41 +57,53 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
               const { location, descriptionForm } = values
 
               try {
-                // .locations()
-                // .child(userId)
-                // .push({
-                //   location,
-                //   descriptionForm
-                // })
-
-                console.log(id)
-
-                firebase
-                  .locations()
-                  .child(userId)
-                  .child(id)
-                  .update({
-                    location,
-                    descriptionForm
-                  })
-                  .then(snapshot => {
-                    console.log('updated')
-                    const { key } = snapshot
-                    console.log(key)
-                    setLocation({
-                      id: key,
-                      title: location,
-                      message: descriptionForm
+                if (id !== '') {
+                  firebase
+                    .locations()
+                    .child(userId)
+                    .child(id)
+                    .update({
+                      location,
+                      description: descriptionForm
                     })
+                    .then(() => {
+                      setLocation({
+                        id,
+                        title: location,
+                        description: descriptionForm
+                      })
+                    })
+
+                  setSnackbarState({
+                    message: 'Location was updated!',
+                    variant: 'success'
                   })
+                } else {
+                  firebase
+                    .locations()
+                    .child(userId)
+                    .push({
+                      location,
+                      description: descriptionForm
+                    })
+                    .then(snapshot => {
+                      const { key } = snapshot
+
+                      setLocation({
+                        id: key,
+                        title: location,
+                        description: descriptionForm
+                      })
+                    })
+
+                  setSnackbarState({
+                    message: 'Location was added!',
+                    variant: 'success'
+                  })
+                }
 
                 setEdit(true)
                 setSubmitting(false)
-
-                setSnackbarState({
-                  message: 'Location was added!',
-                  variant: 'success'
-                })
               } catch (error) {
                 setSnackbarState({ message: error.message, variant: 'error' })
                 setSubmitting(false)

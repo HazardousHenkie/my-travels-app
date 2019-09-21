@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
@@ -12,6 +13,8 @@ import Grid from '@material-ui/core/Grid'
 import EditIcon from '@material-ui/icons/Edit'
 import IconButton from '@material-ui/core/IconButton'
 import CardActions from '@material-ui/core/CardActions'
+
+import * as routes from '../../constants/routes'
 
 const useStyles = makeStyles(() => ({
   image: {
@@ -56,7 +59,12 @@ const LocationCard = ({ location }) => {
         </CardContent>
 
         <CardActions disableSpacing>
-          <IconButton className={classes.editButton} aria-label="edit location">
+          <IconButton
+            component={Link}
+            to={`${routes.editLocation}${location.id}`}
+            className={classes.editButton}
+            aria-label="edit location"
+          >
             <EditIcon />
           </IconButton>
         </CardActions>

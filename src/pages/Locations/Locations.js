@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useSelector } from 'react-redux'
+
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
+import CircularProgress from '@material-ui/core/CircularProgress'
+
 import { WithAuthorization } from '../../components/Authentication'
 import SnackbarContext from '../../components/Snackbar/Context'
 import LocationCard from './LocationCard'
+
+import './Locations.scss'
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -55,6 +60,11 @@ const Locations = ({ firebase }) => {
           </header>
         </div>
         <Grid container spacing={2}>
+          {console.log(locations)}
+          {locations.length === 0 && (
+            <CircularProgress className="messageLoading" />
+          )}
+
           {locations &&
             locations.map(location => (
               <LocationCard location={location} key={location.id} />
