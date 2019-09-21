@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { compose } from 'recompose'
+
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
@@ -8,6 +9,8 @@ import EditIcon from '@material-ui/icons/Edit'
 import Button from '@material-ui/core/Button'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
+import Paper from '@material-ui/core/Paper'
+
 import * as Yup from 'yup'
 import ImageUpload from '../../components/ImageUpload'
 import { WithAuthorization } from '../../components/Authentication'
@@ -22,6 +25,9 @@ const ProfileScheme = Yup.object().shape({
 })
 
 const useStyles = makeStyles(theme => ({
+  rootPaper: {
+    padding: theme.spacing(3, 2)
+  },
   title: {
     flexGrow: 1
   },
@@ -93,104 +99,104 @@ const Profile = ({ firebase }) => {
     <div className="profile">
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <div className="profile">
-            <header className="about_header">
-              <Typography variant="h5" component="h2" className={classes.title}>
-                Profile
-              </Typography>
-            </header>
-          </div>
+          <header className="about_header">
+            <Typography variant="h5" component="h2" className={classes.title}>
+              Profile
+            </Typography>
+          </header>
         </Grid>
       </Grid>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Formik
-            initialValues={{
-              name: userName,
-              description: userDescription
-            }}
-            validationSchema={ProfileScheme}
-            onSubmit={(values, { setSubmitting }) => {
-              const { name, description } = values
+      <Paper className={`${classes.rootPaper} center-content`}>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Formik
+              initialValues={{
+                name: userName,
+                description: userDescription
+              }}
+              validationSchema={ProfileScheme}
+              onSubmit={(values, { setSubmitting }) => {
+                const { name, description } = values
 
-              try {
-                firebase.user(userId).update({
-                  username: name,
-                  description,
-                  countries: multi !== null ? multi : null
-                })
-
-                dispatch(
-                  updateUser({
-                    userName: name,
-                    userDescription: description,
+                try {
+                  firebase.user(userId).update({
+                    username: name,
+                    description,
                     countries: multi !== null ? multi : null
                   })
-                )
 
-                setSubmitting(false)
+                  dispatch(
+                    updateUser({
+                      userName: name,
+                      userDescription: description,
+                      countries: multi !== null ? multi : null
+                    })
+                  )
 
-                setSnackbarState({
-                  message: 'Profile was updated!',
-                  variant: 'success'
-                })
-              } catch (error) {
-                setSnackbarState({ message: error, variant: 'error' })
-                setSubmitting(false)
-              }
-            }}
-          >
-            {({ isSubmitting, isValid }) => (
-              <Form>
-                <Field
-                  type="text"
-                  name="name"
-                  label="Name"
-                  component={TextField}
-                  className={classes.textField}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                />
+                  setSubmitting(false)
 
-                <Field
-                  type="text"
-                  name="description"
-                  label="Introduction"
-                  component={TextField}
-                  className={classes.textField}
-                  multiline
-                  rows={6}
-                  rowsMax={8}
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                />
+                  setSnackbarState({
+                    message: 'Profile was updated!',
+                    variant: 'success'
+                  })
+                } catch (error) {
+                  setSnackbarState({ message: error, variant: 'error' })
+                  setSubmitting(false)
+                }
+              }}
+            >
+              {({ isSubmitting, isValid }) => (
+                <Form>
+                  <Field
+                    type="text"
+                    name="name"
+                    label="Name"
+                    component={TextField}
+                    className={classes.textField}
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                  />
 
-                <CountrySelect
-                  multi={multi}
-                  handleChangeMulti={HandleChangeMulti}
-                />
+                  <Field
+                    type="text"
+                    name="description"
+                    label="Introduction"
+                    component={TextField}
+                    className={classes.textField}
+                    multiline
+                    rows={6}
+                    rowsMax={8}
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                  />
 
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="secondary"
-                  disabled={isSubmitting || !isValid}
-                  aria-label="add"
-                  className={classes.button}
-                >
-                  Save
-                  <EditIcon className={classes.rightIcon} />
-                </Button>
-              </Form>
-            )}
-          </Formik>
+                  <CountrySelect
+                    multi={multi}
+                    handleChangeMulti={HandleChangeMulti}
+                  />
+
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    disabled={isSubmitting || !isValid}
+                    aria-label="add"
+                    className={classes.button}
+                  >
+                    Save
+                    <EditIcon className={classes.rightIcon} />
+                  </Button>
+                </Form>
+              )}
+            </Formik>
+          </Grid>
+          <Grid item xs={6}>
+            {finishedRequest && <ImageUpload imageProps={imageProps} />}
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          {finishedRequest && <ImageUpload imageProps={imageProps} />}
-        </Grid>
-      </Grid>
+      </Paper>
     </div>
   )
 }

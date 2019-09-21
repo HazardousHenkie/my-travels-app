@@ -24,11 +24,23 @@ const AddStep2 = ({ firebase, step2Props }) => {
     initialSetup,
     setInitialSetup
   } = step2Props
-  const [files, setFiles] = useState([])
+
+  const { id, imageURL } = initialLocation
+  const [files, setFiles] = useState(
+    imageURL !== ''
+      ? [
+          {
+            source: imageURL,
+            options: {
+              type: 'local'
+            }
+          }
+        ]
+      : []
+  )
   const [finishedRequest, setFinishedRequest] = useState(false)
   const { setSnackbarState } = useContext(SnackbarContext)
   const { userId } = useSelector(state => state.user)
-  const { id } = initialLocation
 
   useEffect(() => {
     if (!initialSetup) {
