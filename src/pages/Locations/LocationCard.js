@@ -9,11 +9,17 @@ import CardContent from '@material-ui/core/CardContent'
 import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
+import EditIcon from '@material-ui/icons/Edit'
+import IconButton from '@material-ui/core/IconButton'
+import CardActions from '@material-ui/core/CardActions'
 
 const useStyles = makeStyles(() => ({
   image: {
     height: 0,
     paddingTop: '56.25%' // 16:9
+  },
+  editButton: {
+    marginLeft: 'auto'
   }
 }))
 
@@ -48,6 +54,12 @@ const LocationCard = ({ location }) => {
             {location.description}
           </Typography>
         </CardContent>
+
+        <CardActions disableSpacing>
+          <IconButton className={classes.editButton} aria-label="edit location">
+            <EditIcon />
+          </IconButton>
+        </CardActions>
       </Card>
     </Grid>
   )

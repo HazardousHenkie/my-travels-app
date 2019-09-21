@@ -13,7 +13,7 @@ import { withFirebase } from '../../components/Firebase'
 
 const LocationsScheme = Yup.object().shape({
   location: Yup.string().required('Required'),
-  description: Yup.string().required('Required')
+  descriptionForm: Yup.string().required('Required')
 })
 
 const useStyles = makeStyles(theme => ({
@@ -32,7 +32,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
   const classes = useStyles()
   const { setSnackbarState } = useContext(SnackbarContext)
   const { userId } = useSelector(state => state.user)
-  const { title, message } = initialLocation
+  const { id, title, description } = initialLocation
 
   return (
     <div className="locations_add_step_one">
@@ -49,27 +49,39 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
           <Formik
             initialValues={{
               location: title,
-              description: message
+              // this one makes evverything break
+              descriptionForm: description
             }}
             validationSchema={LocationsScheme}
             onSubmit={(values, { setSubmitting }) => {
-              const { location, description } = values
+              const { location, descriptionForm } = values
 
               try {
+                // .locations()
+                // .child(userId)
+                // .push({
+                //   location,
+                //   descriptionForm
+                // })
+
+                console.log(id)
+
                 firebase
                   .locations()
                   .child(userId)
-                  .push({
+                  .child(id)
+                  .update({
                     location,
-                    description
+                    descriptionForm
                   })
                   .then(snapshot => {
+                    console.log('updated')
                     const { key } = snapshot
-
+                    console.log(key)
                     setLocation({
                       id: key,
                       title: location,
-                      message: description
+                      message: descriptionForm
                     })
                   })
 
@@ -100,7 +112,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
 
                 <Field
                   type="text"
-                  name="description"
+                  name="descriptionForm"
                   label="Introduction"
                   component={TextField}
                   multiline
