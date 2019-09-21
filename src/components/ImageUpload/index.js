@@ -31,7 +31,7 @@ const ImageUpload = ({ firebase, imageProps }) => {
     imageRef
       .delete()
       .then(() => {
-        setUploadedFile()
+        setUploadedFile('')
 
         dbRef.child('downloadURL').remove()
 
@@ -87,6 +87,11 @@ const ImageUpload = ({ firebase, imageProps }) => {
                     dbRef.update({ downloadURL })
 
                     setUploadedFile(downloadURL)
+
+                    if (setLoadedFile !== undefined) {
+                      setLoadedFile(downloadURL)
+                    }
+
                     setSnackbarState({
                       message: 'Image uploaded!',
                       variant: 'success'

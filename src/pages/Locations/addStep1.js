@@ -13,7 +13,7 @@ import { withFirebase } from '../../components/Firebase'
 
 const LocationsScheme = Yup.object().shape({
   location: Yup.string().required('Required'),
-  description: Yup.string().required('Required')
+  descriptionForm: Yup.string().required('Required')
 })
 
 const useStyles = makeStyles(theme => ({
@@ -32,7 +32,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
   const classes = useStyles()
   const { setSnackbarState } = useContext(SnackbarContext)
   const { userId } = useSelector(state => state.user)
-  const { title, message } = initialLocation
+  const { id, title, description } = initialLocation
 
   return (
     <div className="locations_add_step_one">
@@ -41,7 +41,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
           <div className="locations_inner">
             <header className="locations_header">
               <Typography variant="h5" component="h2" className={classes.title}>
-                Add title and content
+                Title and content
               </Typography>
             </header>
           </div>
@@ -49,37 +49,61 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
           <Formik
             initialValues={{
               location: title,
-              description: message
+              // this one makes evverything break
+              descriptionForm: description
             }}
             validationSchema={LocationsScheme}
             onSubmit={(values, { setSubmitting }) => {
-              const { location, description } = values
+              const { location, descriptionForm } = values
 
               try {
-                firebase
-                  .locations()
-                  .child(userId)
-                  .push({
-                    location,
-                    description
-                  })
-                  .then(snapshot => {
-                    const { key } = snapshot
-
-                    setLocation({
-                      id: key,
-                      title: location,
-                      message: description
+                if (id !== '') {
+                  firebase
+                    .locations()
+                    .child(userId)
+                    .child(id)
+                    .update({
+                      location,
+                      description: descriptionForm
                     })
+                    .then(() => {
+                      setLocation({
+                        id,
+                        title: location,
+                        description: descriptionForm
+                      })
+                    })
+
+                  setSnackbarState({
+                    message: 'Location was updated!',
+                    variant: 'success'
                   })
+                } else {
+                  firebase
+                    .locations()
+                    .child(userId)
+                    .push({
+                      location,
+                      description: descriptionForm
+                    })
+                    .then(snapshot => {
+                      const { key } = snapshot
+
+                      setLocation({
+                        id: key,
+                        title: location,
+                        description: descriptionForm
+                      })
+                    })
+
+                  setSnackbarState({
+                    message: 'Location was added!',
+                    variant: 'success'
+                  })
+                }
 
                 setEdit(true)
                 setSubmitting(false)
-
-                setSnackbarState({
-                  message: 'Location was added!',
-                  variant: 'success'
-                })
               } catch (error) {
                 setSnackbarState({ message: error.message, variant: 'error' })
                 setSubmitting(false)
@@ -100,7 +124,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
 
                 <Field
                   type="text"
-                  name="description"
+                  name="descriptionForm"
                   label="Introduction"
                   component={TextField}
                   multiline

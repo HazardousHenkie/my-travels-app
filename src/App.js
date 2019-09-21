@@ -24,11 +24,12 @@ let theme = createMuiTheme({
     }
   }
 })
+
 theme = responsiveFontSizes(theme)
 
 const App = () => (
   <div className="App">
-    <React.Fragment>
+    <>
       <CssBaseline />
       <Router history={history}>
         <div className="content">
@@ -41,7 +42,7 @@ const App = () => (
         </div>
         <Footer />
       </Router>
-    </React.Fragment>
+    </>
   </div>
 )
 
