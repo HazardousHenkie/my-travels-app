@@ -40,12 +40,26 @@ const LocationCard = ({ location, firebase }) => {
   userName = useSelector(state => state.user.userName)
 
   const RemoveLocation = id => {
+    const imageLocation = location.image
     firebase
       .locations()
       .child(userId)
       .child(id)
       .remove()
-    // remove image too
+      .then(() => {
+        if (imageLocation !== undefined) {
+          const imageRef = firebase
+            .firebase()
+            .storage()
+            .refFromURL(imageLocation)
+
+          imageRef.delete()
+        }
+      })
+      .catch(removeError => {
+        setSnackbarState({ message: removeError, variant: 'error' })
+      })
+
     setSnackbarState({ message: 'Location was removed!', variant: 'success' })
   }
 
