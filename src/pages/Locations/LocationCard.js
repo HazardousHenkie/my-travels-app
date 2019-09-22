@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
@@ -13,26 +13,55 @@ import Grid from '@material-ui/core/Grid'
 import EditIcon from '@material-ui/icons/Edit'
 import IconButton from '@material-ui/core/IconButton'
 import CardActions from '@material-ui/core/CardActions'
+import DeleteIcon from '@material-ui/icons/Delete'
+
+import SnackbarContext from '../../components/Snackbar/Context'
 
 import * as routes from '../../constants/routes'
 
+import { withFirebase } from '../../components/Firebase'
+
 const useStyles = makeStyles(() => ({
   image: {
-    height: 0,
-    paddingTop: '56.25%' // 16:9
+    minHeight: 200,
+    backgroundSize: 'contain'
   },
-  editButton: {
+  removeButton: {
     marginLeft: 'auto'
   }
 }))
 
-const LocationCard = ({ location }) => {
+const LocationCard = ({ location, firebase }) => {
+  const { setSnackbarState } = useContext(SnackbarContext)
+  const { userId } = useSelector(state => state.user)
   const classes = useStyles()
   let userName = ''
 
-  // check url for id and if not in url get from store
-
   userName = useSelector(state => state.user.userName)
+
+  const RemoveLocation = id => {
+    const imageLocation = location.image
+    firebase
+      .locations()
+      .child(userId)
+      .child(id)
+      .remove()
+      .then(() => {
+        if (imageLocation !== undefined) {
+          const imageRef = firebase
+            .firebase()
+            .storage()
+            .refFromURL(imageLocation)
+
+          imageRef.delete()
+        }
+      })
+      .catch(removeError => {
+        setSnackbarState({ message: removeError, variant: 'error' })
+      })
+
+    setSnackbarState({ message: 'Location was removed!', variant: 'success' })
+  }
 
   const avatarUserName = userName.charAt(0)
 
@@ -60,9 +89,21 @@ const LocationCard = ({ location }) => {
 
         <CardActions disableSpacing>
           <IconButton
+            onClick={() => RemoveLocation(location.id)}
+            aria-label="delete location"
+            className={classes.removeButton}
+          >
+            <DeleteIcon />
+          </IconButton>
+
+          <IconButton
             component={Link}
-            to={`${routes.editLocation}${location.id}`}
-            className={classes.editButton}
+            to={{
+              pathname: `${routes.editLocation}${location.id}`,
+              state: {
+                location
+              }
+            }}
             aria-label="edit location"
           >
             <EditIcon />
@@ -73,4 +114,4 @@ const LocationCard = ({ location }) => {
   )
 }
 
-export default LocationCard
+export default withFirebase(LocationCard)

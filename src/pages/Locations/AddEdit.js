@@ -23,7 +23,7 @@ import SnackbarContext from '../../components/Snackbar/Context'
 
 import { withFirebase } from '../../components/Firebase'
 
-import './Add.scss'
+import './AddEdit.scss'
 
 const useStyles = makeStyles(theme => ({
   rootPaper: {
@@ -45,27 +45,30 @@ const GetSteps = () => {
   return ['Where did you go?', 'Show us where you went!', 'Preview']
 }
 
-const HorizontalLinearStepper = ({ firebase, match }) => {
+const HorizontalLinearStepper = ({ firebase, match, location }) => {
   const classes = useStyles()
   const { setSnackbarState } = useContext(SnackbarContext)
   const [activeStep, setActiveStep] = useState(0)
   const [skipped, setSkipped] = useState(new Set())
   const [edit, setEdit] = useState(false)
-  const [location, setLocation] = useState({
-    id: '',
-    title: '',
-    description: '',
-    imageURL: ''
+  const [locationLocal, setLocation] = useState({
+    id: location.state !== undefined ? location.state.location.id : '',
+    title: location.state !== undefined ? location.state.location.title : '',
+    description:
+      location.state !== undefined ? location.state.location.description : '',
+    imageURL: location.state !== undefined ? location.state.location.image : ''
   })
+
   const [initialSetup, setInitialSetup] = useState(true)
-  const [uploadedFile, setLoadedFile] = useState('')
+  const [uploadedFile, setLoadedFile] = useState(
+    location.state !== undefined ? location.state.location.image : ''
+  )
   const { userId } = useSelector(state => state.user)
   const [finishedRequest, setFinishedRequest] = useState(false)
   const steps = GetSteps()
 
-  // add from store and not from url when clicked
   useEffect(() => {
-    if (match.params.id !== undefined) {
+    if (match.params.id !== undefined && location.state === undefined) {
       const unsubscribe = firebase
         .locations()
         .child(userId)
@@ -81,6 +84,7 @@ const HorizontalLinearStepper = ({ firebase, match }) => {
               imageURL: locationObject.downloadURL
             })
 
+            setLoadedFile(locationObject.downloadURL)
             setFinishedRequest(true)
           }
         })
@@ -91,13 +95,13 @@ const HorizontalLinearStepper = ({ firebase, match }) => {
     }
     setFinishedRequest(true)
     return () => null
-  }, [firebase, setSnackbarState, userId, match, initialSetup])
+  }, [firebase, setSnackbarState, userId, match, initialSetup, location.state])
 
   const GetStepContent = step => {
     const step2Props = {
       uploadedFile,
       setLoadedFile,
-      initialLocation: location,
+      initialLocation: locationLocal,
       initialSetup,
       setInitialSetup
     }
@@ -109,14 +113,16 @@ const HorizontalLinearStepper = ({ firebase, match }) => {
             <AddStep1
               setEdit={setEdit}
               setLocation={setLocation}
-              initialLocation={location}
+              initialLocation={locationLocal}
             />
           )
         )
       case 1:
         return <AddStep2 step2Props={step2Props} />
       case 2:
-        return <PreviewStep location={location} uploadedFile={uploadedFile} />
+        return (
+          <PreviewStep location={locationLocal} uploadedFile={uploadedFile} />
+        )
       default:
         return 'Unknown step'
     }

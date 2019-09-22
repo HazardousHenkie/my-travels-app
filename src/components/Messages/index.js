@@ -46,14 +46,13 @@ const GetMessages = ({ firebase }) => {
   const userId = useSelector(state => state.user.userId)
 
   useEffect(() => {
-    setLoading(true)
-    const unsubscribe = firebase
-      .messages(userId)
-      .orderByChild('userId')
-      .equalTo(userId)
-      .on(
-        'value',
-        snapshot => {
+    try {
+      setLoading(true)
+      firebase
+        .messages(userId)
+        .orderByChild('userId')
+        .equalTo(userId)
+        .on('value', snapshot => {
           const messagesObject = snapshot.val()
           if (messagesObject) {
             const sortedMessages = Object.keys(messagesObject).map(key => ({
@@ -79,13 +78,16 @@ const GetMessages = ({ firebase }) => {
             setMessages([])
             setLoading(false)
           }
-        },
-        err => {
-          setSnackbarState({ message: err, variant: 'error' })
-        }
-      )
-
-    return () => unsubscribe
+        })
+    } catch (error) {
+      setLoading(false)
+      setSnackbarState({ message: error, variant: 'error' })
+    }
+    return () =>
+      firebase
+        .locations()
+        .child(userId)
+        .off('value')
   }, [userId, firebase, setSnackbarState])
 
   return (
