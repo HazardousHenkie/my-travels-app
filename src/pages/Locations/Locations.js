@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
+import { CSSTransition, TransitionGroup } from 'react-transition-group'
 import { WithAuthorization } from '../../components/Authentication'
 import SnackbarContext from '../../components/Snackbar/Context'
 import LocationCard from './LocationCard'
@@ -23,30 +24,40 @@ const Locations = ({ firebase }) => {
   const { setSnackbarState } = useContext(SnackbarContext)
   const { userId } = useSelector(state => state.user)
   const [locations, setLocations] = useState([])
+  const [loading, setLoading] = useState(true)
   const classes = useStyles()
 
   useEffect(() => {
-    const unsubscribe = firebase
-      .locations()
-      .child(userId)
-      .once('value', snapshot => {
-        if (snapshot.val() !== null) {
-          const locationObject = snapshot.val()
+    try {
+      firebase
+        .locations()
+        .child(userId)
+        .on('value', snapshot => {
+          if (snapshot.val() !== null) {
+            const locationObject = snapshot.val()
 
-          const locationsArray = Object.keys(locationObject).map(key => ({
-            title: locationObject[key].location,
-            image: locationObject[key].downloadURL,
-            description: locationObject[key].description,
-            id: key
-          }))
+            const locationsArray = Object.keys(locationObject).map(key => ({
+              title: locationObject[key].location,
+              image: locationObject[key].downloadURL,
+              description: locationObject[key].description,
+              id: key
+            }))
 
-          setLocations(locationsArray)
-        }
-      })
-      .catch(removeError => {
-        setSnackbarState({ message: removeError, variant: 'error' })
-      })
-    return () => unsubscribe
+            setLocations(locationsArray)
+          } else {
+            setLocations([])
+          }
+
+          setLoading(false)
+        })
+    } catch (error) {
+      setSnackbarState({ message: error, variant: 'error' })
+    }
+    return () =>
+      firebase
+        .locations()
+        .child(userId)
+        .off('value')
   }, [firebase, setSnackbarState, userId])
 
   return (
@@ -59,17 +70,18 @@ const Locations = ({ firebase }) => {
             </Typography>
           </header>
         </div>
-        <Grid container spacing={2}>
-          {console.log(locations)}
-          {locations.length === 0 && (
-            <CircularProgress className="messageLoading" />
-          )}
 
-          {locations &&
-            locations.map(location => (
-              <LocationCard location={location} key={location.id} />
+        {loading && <CircularProgress className="messageLoading" />}
+
+        {locations && (
+          <TransitionGroup component={Grid} container spacing={2}>
+            {locations.map(location => (
+              <CSSTransition key={location.id} timeout={500} classNames="item">
+                <LocationCard location={location} key={location.id} />
+              </CSSTransition>
             ))}
-        </Grid>
+          </TransitionGroup>
+        )}
       </Grid>
     </Grid>
   )

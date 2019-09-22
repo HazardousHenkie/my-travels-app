@@ -32,7 +32,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
   const classes = useStyles()
   const { setSnackbarState } = useContext(SnackbarContext)
   const { userId } = useSelector(state => state.user)
-  const { id, title, description } = initialLocation
+  const { id, title, description, imageURL } = initialLocation
 
   return (
     <div className="locations_add_step_one">
@@ -49,7 +49,6 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
           <Formik
             initialValues={{
               location: title,
-              // this one makes evverything break
               descriptionForm: description
             }}
             validationSchema={LocationsScheme}
@@ -70,7 +69,8 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
                       setLocation({
                         id,
                         title: location,
-                        description: descriptionForm
+                        description: descriptionForm,
+                        imageURL
                       })
                     })
 
