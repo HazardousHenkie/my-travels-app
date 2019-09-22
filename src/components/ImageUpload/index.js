@@ -18,6 +18,7 @@ const ImageUpload = ({ firebase, imageProps }) => {
     setInitialSetup,
     setLoadedFile
   } = imageProps
+
   const [files, setFiles] = useState(intialFiles)
   const [uploadedFile, setUploadedFile] = useState(initialFile)
   const { setSnackbarState } = useContext(SnackbarContext)
