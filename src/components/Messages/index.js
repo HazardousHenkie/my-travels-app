@@ -15,8 +15,6 @@ import { withFirebase } from '../Firebase'
 import SnackbarContext from '../Snackbar/Context'
 import MessageListItem from './MessageListItem'
 
-import './messages.scss'
-
 const MessageScheme = Yup.object().shape({
   message: Yup.string().required('Required')
 })
