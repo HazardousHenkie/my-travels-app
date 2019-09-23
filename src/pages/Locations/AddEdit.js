@@ -13,9 +13,9 @@ import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-import AddStep1 from './addStep1'
-import AddStep2 from './addStep2'
-import PreviewStep from './PreviewStep'
+import AddStep1 from '../../components/Locations/addStep1'
+import AddStep2 from '../../components/Locations/addStep2'
+import PreviewStep from '../../components/Locations/PreviewStep'
 
 import * as routes from '../../constants/routes'
 

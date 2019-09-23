@@ -15,11 +15,11 @@ import IconButton from '@material-ui/core/IconButton'
 import CardActions from '@material-ui/core/CardActions'
 import DeleteIcon from '@material-ui/icons/Delete'
 
-import SnackbarContext from '../../components/Snackbar/Context'
+import SnackbarContext from '../Snackbar/Context'
 
 import * as routes from '../../constants/routes'
 
-import { withFirebase } from '../../components/Firebase'
+import { withFirebase } from '../Firebase'
 
 const useStyles = makeStyles(() => ({
   image: {
@@ -31,13 +31,18 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const LocationCard = ({ location, firebase }) => {
+const LocationCard = ({ location, edit, firebase }) => {
   const { setSnackbarState } = useContext(SnackbarContext)
-  const { userId } = useSelector(state => state.user)
+  const { userId, userName } = useSelector(state => state.user)
   const classes = useStyles()
-  let userName = ''
+  const { userNameLocation } = location
+  let userNameCard = ''
 
-  userName = useSelector(state => state.user.userName)
+  if (userNameLocation !== '' && userNameLocation !== undefined) {
+    userNameCard = userNameLocation
+  } else {
+    userNameCard = userName
+  }
 
   const RemoveLocation = id => {
     const imageLocation = location.image
@@ -63,7 +68,7 @@ const LocationCard = ({ location, firebase }) => {
     setSnackbarState({ message: 'Location was removed!', variant: 'success' })
   }
 
-  const avatarUserName = userName.charAt(0)
+  const avatarUserName = userNameCard.charAt(0)
 
   return (
     <Grid item xs={4}>
@@ -87,28 +92,30 @@ const LocationCard = ({ location, firebase }) => {
           </Typography>
         </CardContent>
 
-        <CardActions disableSpacing>
-          <IconButton
-            onClick={() => RemoveLocation(location.id)}
-            aria-label="delete location"
-            className={classes.removeButton}
-          >
-            <DeleteIcon />
-          </IconButton>
+        {edit && (
+          <CardActions disableSpacing>
+            <IconButton
+              onClick={() => RemoveLocation(location.id)}
+              aria-label="delete location"
+              className={classes.removeButton}
+            >
+              <DeleteIcon />
+            </IconButton>
 
-          <IconButton
-            component={Link}
-            to={{
-              pathname: `${routes.editLocation}${location.id}`,
-              state: {
-                location
-              }
-            }}
-            aria-label="edit location"
-          >
-            <EditIcon />
-          </IconButton>
-        </CardActions>
+            <IconButton
+              component={Link}
+              to={{
+                pathname: `${routes.editLocation}${location.id}`,
+                state: {
+                  location
+                }
+              }}
+              aria-label="edit location"
+            >
+              <EditIcon />
+            </IconButton>
+          </CardActions>
+        )}
       </Card>
     </Grid>
   )
