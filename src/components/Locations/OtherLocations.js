@@ -7,8 +7,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
-import { WithAuthorization } from '../../components/Authentication'
-import SnackbarContext from '../../components/Snackbar/Context'
+import { WithAuthorization } from '../Authentication'
+import SnackbarContext from '../Snackbar/Context'
 import LocationCard from './LocationCard'
 
 import './Locations.scss'
@@ -20,44 +20,59 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-const Locations = ({ firebase }) => {
+const OtherLocations = ({ firebase }) => {
   const { setSnackbarState } = useContext(SnackbarContext)
   const { userId } = useSelector(state => state.user)
   const [locations, setLocations] = useState([])
   const [loading, setLoading] = useState(true)
   const classes = useStyles()
 
+  // limit somehow // get own locations number and wait for this one to work.
+  // add user properly
+
   useEffect(() => {
-    try {
-      firebase
-        .locations()
-        .child(userId)
-        .on('value', snapshot => {
-          if (snapshot.val() !== null) {
-            const locationObject = snapshot.val()
+    const unsubscribe = firebase
+      .locations()
+      .limitToFirst(1)
+      .once('value', snapshot => {
+        if (snapshot.val() !== null) {
+          const locationObject = snapshot.val()
+          let userName = ''
 
-            const locationsArray = Object.keys(locationObject).map(key => ({
-              title: locationObject[key].location,
-              image: locationObject[key].downloadURL,
-              description: locationObject[key].description,
-              id: key
-            }))
+          const locationsArray = Object.keys(locationObject).reduce((r, k) => {
+            let newLocationObject = []
 
-            setLocations(locationsArray)
-          } else {
-            setLocations([])
-          }
+            if (k !== userId) {
+              firebase.user(k).once('value', userSnapshot => {
+                if (userSnapshot.val() !== null) {
+                  userName = userSnapshot.val().username
+                }
+              })
 
-          setLoading(false)
-        })
-    } catch (error) {
-      setSnackbarState({ message: error, variant: 'error' })
-    }
-    return () =>
-      firebase
-        .locations()
-        .child(userId)
-        .off('value')
+              newLocationObject = Object.keys(locationObject[k]).map(key => ({
+                userName,
+                title: locationObject[k][key].location,
+                image: locationObject[k][key].downloadURL,
+                description: locationObject[k][key].description,
+                id: key
+              }))
+            }
+
+            return r.concat(newLocationObject)
+          }, [])
+
+          setLocations(locationsArray)
+        } else {
+          setLocations([])
+        }
+
+        setLoading(false)
+      })
+      .catch(error => {
+        setSnackbarState({ message: error, variant: 'error' })
+      })
+
+    return () => unsubscribe()
   }, [firebase, setSnackbarState, userId])
 
   return (
@@ -66,7 +81,7 @@ const Locations = ({ firebase }) => {
         <div className="locations">
           <header className="locations__header">
             <Typography variant="h5" component="h2" className={classes.title}>
-              My Locations
+              Where to next? Check where other people have been!
             </Typography>
           </header>
         </div>
@@ -87,4 +102,4 @@ const Locations = ({ firebase }) => {
   )
 }
 
-export default WithAuthorization(Locations)
+export default WithAuthorization(OtherLocations)

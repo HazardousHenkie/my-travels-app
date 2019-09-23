@@ -8,8 +8,8 @@ import Button from '@material-ui/core/Button'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
 import * as Yup from 'yup'
-import SnackbarContext from '../../components/Snackbar/Context'
-import { withFirebase } from '../../components/Firebase'
+import SnackbarContext from '../Snackbar/Context'
+import { withFirebase } from '../Firebase'
 
 const LocationsScheme = Yup.object().shape({
   location: Yup.string().required('Required'),
