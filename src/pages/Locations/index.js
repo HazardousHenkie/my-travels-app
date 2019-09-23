@@ -9,7 +9,7 @@ import EditIcon from '@material-ui/icons/Edit'
 
 import { WithAuthorization } from '../../components/Authentication'
 
-import Locations from './Locations'
+import Locations from '../../components/Locations/Locations'
 
 import * as routes from '../../constants/routes'
 
@@ -28,7 +28,7 @@ const LocationsIndex = () => {
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <div className="locations_index">
-          <Locations />
+          <Locations edit />
 
           <div className="locations_index__add_button">
             <Fab

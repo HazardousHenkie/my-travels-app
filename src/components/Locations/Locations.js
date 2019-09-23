@@ -7,8 +7,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { CSSTransition, TransitionGroup } from 'react-transition-group'
-import { WithAuthorization } from '../../components/Authentication'
-import SnackbarContext from '../../components/Snackbar/Context'
+import { WithAuthorization } from '../Authentication'
+import SnackbarContext from '../Snackbar/Context'
 import LocationCard from './LocationCard'
 
 import './Locations.scss'
@@ -77,7 +77,7 @@ const Locations = ({ firebase }) => {
           <TransitionGroup component={Grid} container spacing={2}>
             {locations.map(location => (
               <CSSTransition key={location.id} timeout={500} classNames="item">
-                <LocationCard location={location} key={location.id} />
+                <LocationCard edit location={location} key={location.id} />
               </CSSTransition>
             ))}
           </TransitionGroup>
