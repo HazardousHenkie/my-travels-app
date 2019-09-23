@@ -33,7 +33,7 @@ const OtherLocations = ({ firebase }) => {
   useEffect(() => {
     const unsubscribe = firebase
       .locations()
-      .limitToFirst(1)
+      // .limitToFirst(1)
       .once('value', snapshot => {
         if (snapshot.val() !== null) {
           const locationObject = snapshot.val()
@@ -50,7 +50,7 @@ const OtherLocations = ({ firebase }) => {
               })
 
               newLocationObject = Object.keys(locationObject[k]).map(key => ({
-                userName,
+                userNameLocation: userName,
                 title: locationObject[k][key].location,
                 image: locationObject[k][key].downloadURL,
                 description: locationObject[k][key].description,

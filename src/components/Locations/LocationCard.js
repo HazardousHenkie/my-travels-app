@@ -33,11 +33,16 @@ const useStyles = makeStyles(() => ({
 
 const LocationCard = ({ location, edit, firebase }) => {
   const { setSnackbarState } = useContext(SnackbarContext)
-  const { userId } = useSelector(state => state.user)
+  const { userId, userName } = useSelector(state => state.user)
   const classes = useStyles()
-  let userName = ''
+  const { userNameLocation } = location
+  let userNameCard = ''
 
-  userName = useSelector(state => state.user.userName)
+  if (userNameLocation !== '' && userNameLocation !== undefined) {
+    userNameCard = userNameLocation
+  } else {
+    userNameCard = userName
+  }
 
   const RemoveLocation = id => {
     const imageLocation = location.image
@@ -63,7 +68,7 @@ const LocationCard = ({ location, edit, firebase }) => {
     setSnackbarState({ message: 'Location was removed!', variant: 'success' })
   }
 
-  const avatarUserName = userName.charAt(0)
+  const avatarUserName = userNameCard.charAt(0)
 
   return (
     <Grid item xs={4}>
