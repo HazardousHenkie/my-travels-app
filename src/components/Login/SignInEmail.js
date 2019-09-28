@@ -61,19 +61,19 @@ const SignUpForm = ({ firebase }) => {
         onSubmit={async (values, { setSubmitting }) => {
           const { email, password } = values
 
-          const emailAuthUser = firebase
+          firebase
             .doSignInWithEmailAndPassword(email, password)
-            .then(() => {
-              firebase.user(emailAuthUser.user.uid).set({
-                username: emailAuthUser.user.email,
-                email: emailAuthUser.user.email
+            .then(signInResult => {
+              firebase.user(signInResult.user.uid).set({
+                username: signInResult.user.email,
+                email: signInResult.user.email
               })
 
               dispatch(
                 addUser({
                   loggedIn: true,
-                  userName: emailAuthUser.user.displayName,
-                  userId: emailAuthUser.user.uid
+                  userName: signInResult.user.displayName,
+                  userId: signInResult.user.uid
                 })
               )
 
