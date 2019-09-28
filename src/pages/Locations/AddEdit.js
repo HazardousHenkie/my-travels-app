@@ -55,8 +55,6 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
   const [skipped, setSkipped] = useState(new Set())
   const [edit, setEdit] = useState(false)
 
-  // console.log(location)
-
   const [locationLocal, setLocation] = useState({
     id:
       location && location.state !== undefined
@@ -85,8 +83,6 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
   const { userId } = useSelector(state => state.user)
   const [finishedRequest, setFinishedRequest] = useState(false)
   const steps = GetSteps()
-
-  console.log(match)
 
   useEffect(() => {
     if (
