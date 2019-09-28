@@ -79,7 +79,7 @@ const MainMenu = () => {
         {authenticated > 0 && (
           <Button
             component={LinkRef}
-            to={routes.profile}
+            to={routes.myProfile}
             className={classes.button}
             color="inherit"
           >

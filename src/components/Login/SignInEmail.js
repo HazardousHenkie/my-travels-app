@@ -64,6 +64,8 @@ const SignUpForm = ({ firebase }) => {
           firebase
             .doSignInWithEmailAndPassword(email, password)
             .then(signInResult => {
+              // if new user dispach other like google?
+              console.log(signInResult)
               firebase.user(signInResult.user.uid).set({
                 username: signInResult.user.email,
                 email: signInResult.user.email

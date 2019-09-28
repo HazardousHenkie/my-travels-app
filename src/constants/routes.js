@@ -1,6 +1,7 @@
 export const home = '/'
 export const about = '/about'
-export const profile = '/profile'
+export const profile = '/profile/'
+export const myProfile = '/my-profile'
 export const locations = '/my-locations'
 export const signUp = '/sign-up'
 export const forgotPassword = '/forgot-password'
