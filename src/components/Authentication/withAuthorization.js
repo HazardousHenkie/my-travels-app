@@ -3,6 +3,8 @@ import React, { useEffect } from 'react'
 import AuthUserContext from './context'
 import { withFirebase } from '../Firebase'
 
+import history from '../../Helpers/History'
+
 import * as routes from '../../constants/routes'
 
 const withAuthorization = Component => {
@@ -11,10 +13,10 @@ const withAuthorization = Component => {
       const listener = props.firebase.auth.onAuthStateChanged(
         authUser => {
           if (!authUser) {
-            props.history.push(routes.home)
+            history.push(routes.home)
           }
         },
-        () => props.history.push(routes.home)
+        () => history.push(routes.home)
       )
 
       return () => listener

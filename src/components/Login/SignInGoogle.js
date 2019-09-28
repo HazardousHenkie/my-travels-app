@@ -35,27 +35,50 @@ const SignInGoogle = ({ firebase }) => {
   const onSubmit = async event => {
     event.preventDefault()
 
-    try {
-      const socialAuthUser = await firebase.doSignInWithGoogle()
-      await firebase.user(socialAuthUser.user.uid).set({
-        username: socialAuthUser.user.displayName,
-        email: socialAuthUser.user.email
+    const socialAuthUser = await firebase
+      .doSignInWithGoogle()
+      .then(() => {
+        if (socialAuthUser.additionalUserInfo.isNewUser) {
+          firebase.user(socialAuthUser.user.uid).set({
+            username: socialAuthUser.user.displayName,
+            email: socialAuthUser.user.email
+          })
+
+          dispatch(
+            addUser({
+              loggedIn: true,
+              userName: socialAuthUser.user.displayName,
+              userId: socialAuthUser.user.uid
+            })
+          )
+        } else {
+          firebase.user(socialAuthUser.user.uid).once('value', snapshot => {
+            dispatch(
+              addUser({
+                loggedIn: true,
+                userName: snapshot.val().username,
+                userDescription:
+                  snapshot.val().description !== null
+                    ? snapshot.val().description
+                    : '',
+                countries:
+                  snapshot.val().countries !== undefined
+                    ? snapshot.val().countries
+                    : null,
+                userId: socialAuthUser.user.uid
+              })
+            )
+          })
+        }
+
+        setSnackbarState({ message: 'Logged in!', variant: 'success' })
+        history.push(routes.home)
       })
-
-      setError('')
-
-      dispatch(
-        addUser({
-          loggedIn: true,
-          userName: socialAuthUser.user.displayName,
-          userId: socialAuthUser.user.uid
-        })
-      )
-
-      history.push(routes.about)
-    } catch (error) {
-      setError({ error })
-    }
+      .catch(error => {
+        const { message } = error
+        setSnackbarState({ message, variant: 'error' })
+        history.push(routes.home)
+      })
   }
 
   return (
