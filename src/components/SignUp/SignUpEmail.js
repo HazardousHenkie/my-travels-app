@@ -87,7 +87,11 @@ const SignUpForm = ({ firebase }) => {
 
             setSubmitting(false)
             setSnackbarState({ message: 'Logged in!', variant: 'success' })
+<<<<<<< HEAD
             history.push(routes.home)
+=======
+            history.push(routes.about)
+>>>>>>> 79474436aed7dc1496ce3241e0d07bf3e2ace57e
           } catch (error) {
             setSubmitting(false)
             setSnackbarState({ message: error.message, variant: 'error' })

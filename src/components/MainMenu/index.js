@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 import { useSelector } from 'react-redux'
 
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import * as routes from '../../constants/routes'
@@ -16,30 +15,78 @@ import SignOutButton from '../SignOut'
 import './MainMenu.scss'
 
 const useStyles = makeStyles(() => ({
-  title: {
-    flexGrow: 1
+  appBar: {
+    backgroundColor: 'transparent',
+    boxShadow: 'none'
+  },
+  toolBar: {
+    justifyContent: 'flex-end'
+  },
+  button: {
+    backgroundColor: 'rgba(0, 0, 0, 0.08)',
+    marginRight: '10px',
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.2)'
+    }
   }
 }))
 
-function MainMenu() {
+const MainMenu = () => {
   const authenticated = useSelector(state => state.user.loggedIn)
   const classes = useStyles()
-  return (
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" className={classes.title}>
-          My Application
-        </Typography>
+  const LinkRef = forwardRef((props, ref) => (
+    <div ref={ref}>
+      <NavLink exact {...props} />
+    </div>
+  ))
 
-        <Button component={Link} to={routes.home} color="inherit">
+  LinkRef.displayName = 'LinkRef'
+
+  return (
+    <AppBar className={classes.appBar} position="static">
+      <Toolbar className={classes.toolBar}>
+        <Button
+          component={LinkRef}
+          to={routes.home}
+          className={classes.button}
+          color="inherit"
+        >
           Home
         </Button>
 
         {authenticated > 0 && (
-          <Button component={Link} to={routes.about} color="inherit">
+          <Button
+            component={LinkRef}
+            to={routes.about}
+            className={classes.button}
+            color="inherit"
+          >
             About
           </Button>
         )}
+
+        {authenticated > 0 && (
+          <Button
+            component={LinkRef}
+            className={classes.button}
+            to={routes.locations}
+            color="inherit"
+          >
+            My Locations
+          </Button>
+        )}
+
+        {authenticated > 0 && (
+          <Button
+            component={LinkRef}
+            to={routes.profile}
+            className={classes.button}
+            color="inherit"
+          >
+            Profile
+          </Button>
+        )}
+
         {authenticated > 0 && <SignOutButton />}
       </Toolbar>
     </AppBar>
