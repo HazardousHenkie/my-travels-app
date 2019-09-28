@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useSelector } from 'react-redux'
 
+import { compose } from 'recompose'
+
 import { Link } from 'react-router-dom'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -21,6 +23,7 @@ import * as routes from '../../constants/routes'
 
 import SnackbarContext from '../../components/Snackbar/Context'
 
+import { WithAuthorization } from '../../components/Authentication'
 import { withFirebase } from '../../components/Firebase'
 
 import './AddEdit.scss'
@@ -51,24 +54,42 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
   const [activeStep, setActiveStep] = useState(0)
   const [skipped, setSkipped] = useState(new Set())
   const [edit, setEdit] = useState(false)
+
   const [locationLocal, setLocation] = useState({
-    id: location.state !== undefined ? location.state.location.id : '',
-    title: location.state !== undefined ? location.state.location.title : '',
+    id:
+      location && location.state !== undefined
+        ? location.state.location.id
+        : '',
+    title:
+      location && location.state !== undefined
+        ? location.state.location.title
+        : '',
     description:
-      location.state !== undefined ? location.state.location.description : '',
-    imageURL: location.state !== undefined ? location.state.location.image : ''
+      location && location.state !== undefined
+        ? location.state.location.description
+        : '',
+    imageURL:
+      location && location.state !== undefined
+        ? location.state.location.image
+        : ''
   })
 
   const [initialSetup, setInitialSetup] = useState(true)
   const [uploadedFile, setLoadedFile] = useState(
-    location.state !== undefined ? location.state.location.image : ''
+    location && location.state !== undefined
+      ? location.state.location.image
+      : ''
   )
   const { userId } = useSelector(state => state.user)
   const [finishedRequest, setFinishedRequest] = useState(false)
   const steps = GetSteps()
 
   useEffect(() => {
-    if (match.params.id !== undefined && location.state === undefined) {
+    if (
+      match &&
+      match.params.id !== undefined &&
+      (location && location.state === undefined)
+    ) {
       const unsubscribe = firebase
         .locations()
         .child(userId)
@@ -95,7 +116,7 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
     }
     setFinishedRequest(true)
     return () => null
-  }, [firebase, setSnackbarState, userId, match, initialSetup, location.state])
+  }, [firebase, setSnackbarState, userId, match, initialSetup, location])
 
   const GetStepContent = step => {
     const step2Props = {
@@ -282,4 +303,7 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
   )
 }
 
-export default withFirebase(HorizontalLinearStepper)
+export default compose(
+  withFirebase,
+  WithAuthorization
+)(HorizontalLinearStepper)

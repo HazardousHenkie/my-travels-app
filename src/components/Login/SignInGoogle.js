@@ -27,24 +27,24 @@ const SignInGoogle = ({ firebase }) => {
   const onSubmit = async event => {
     event.preventDefault()
 
-    const socialAuthUser = await firebase
+    firebase
       .doSignInWithGoogle()
-      .then(() => {
-        if (socialAuthUser.additionalUserInfo.isNewUser) {
-          firebase.user(socialAuthUser.user.uid).set({
-            username: socialAuthUser.user.displayName,
-            email: socialAuthUser.user.email
+      .then(signInResult => {
+        if (signInResult.additionalUserInfo.isNewUser) {
+          firebase.user(signInResult.user.uid).set({
+            username: signInResult.user.displayName,
+            email: signInResult.user.email
           })
 
           dispatch(
             addUser({
               loggedIn: true,
-              userName: socialAuthUser.user.displayName,
-              userId: socialAuthUser.user.uid
+              userName: signInResult.user.displayName,
+              userId: signInResult.user.uid
             })
           )
         } else {
-          firebase.user(socialAuthUser.user.uid).once('value', snapshot => {
+          firebase.user(signInResult.user.uid).once('value', snapshot => {
             dispatch(
               addUser({
                 loggedIn: true,
@@ -57,7 +57,7 @@ const SignInGoogle = ({ firebase }) => {
                   snapshot.val().countries !== undefined
                     ? snapshot.val().countries
                     : null,
-                userId: socialAuthUser.user.uid
+                userId: signInResult.user.uid
               })
             )
           })
