@@ -1,28 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { compose } from 'recompose'
 
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
+import Box from '@material-ui/core/Box'
+import Chip from '@material-ui/core/Chip'
 import { makeStyles } from '@material-ui/core/styles'
-import EditIcon from '@material-ui/icons/Edit'
-import Button from '@material-ui/core/Button'
-import { Formik, Form, Field } from 'formik'
-import { TextField } from 'formik-material-ui'
 import Paper from '@material-ui/core/Paper'
 
-import * as Yup from 'yup'
-import ImageUpload from '../../components/ImageUpload'
 import { WithAuthorization } from '../../components/Authentication'
 import SnackbarContext from '../../components/Snackbar/Context'
 import { withFirebase } from '../../components/Firebase'
-import { updateUser } from '../../Redux/Actions'
-import CountrySelect from '../../components/CountrySelect'
-
-const ProfileScheme = Yup.object().shape({
-  name: Yup.string().required('Required'),
-  description: Yup.string().required('Required')
-})
 
 const useStyles = makeStyles(theme => ({
   rootPaper: {
@@ -31,69 +19,44 @@ const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1
   },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1)
+  text: {
+    marginTop: '20px'
   },
-  button: {
+  image: {
+    maxWidth: '100%'
+  },
+  chip: {
     margin: theme.spacing(1)
-  },
-  rightIcon: {
-    marginLeft: theme.spacing(1)
   }
 }))
 
-const Profile = ({ firebase }) => {
+const Profile = ({ firebase, match }) => {
   const classes = useStyles()
-  const dispatch = useDispatch()
+  const [user, setUser] = useState({})
   const { setSnackbarState } = useContext(SnackbarContext)
-  const [files, setFiles] = useState([])
-  const [uploadedFile, setUploadedFile] = useState('')
-  const [finishedRequest, setFinishedRequest] = useState(false)
-  const { userId, userName, userDescription, countries } = useSelector(
-    state => state.user
-  )
-
-  const [multi, setMulti] = React.useState(countries)
-
-  const HandleChangeMulti = value => {
-    setMulti(value)
-  }
 
   useEffect(() => {
     const unsubscribe = firebase
-      .user(userId)
+      .user(match.params.id)
       .once('value', snapshot => {
-        if (
-          snapshot.val() !== null &&
-          snapshot.val().downloadURL !== undefined
-        ) {
-          setFiles([
-            {
-              source: snapshot.val().downloadURL,
-              options: {
-                type: 'local'
-              }
-            }
-          ])
-
-          setUploadedFile(snapshot.val().downloadURL)
+        if (snapshot.val() !== null) {
+          setUser({
+            name: snapshot.val().username,
+            image: snapshot.val().downloadURL,
+            description: snapshot.val().description,
+            countries: snapshot.val().countries
+          })
         }
-
-        setFinishedRequest(true)
       })
       .catch(removeError => {
         setSnackbarState({ message: removeError, variant: 'error' })
       })
     return () => unsubscribe
-  }, [firebase, setSnackbarState, userId])
+  }, [firebase, setSnackbarState, match])
 
-  const imageProps = {
-    dbId: userId,
-    dbRef: firebase.user(userId),
-    intialFiles: files,
-    initialFile: uploadedFile
-  }
+  const { image, name, description, countries } = user
+
+  console.log(user)
 
   return (
     <div className="profile">
@@ -109,91 +72,35 @@ const Profile = ({ firebase }) => {
       <Paper className={`${classes.rootPaper} center-content`}>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <Formik
-              initialValues={{
-                name: userName,
-                description: userDescription
-              }}
-              validationSchema={ProfileScheme}
-              onSubmit={(values, { setSubmitting }) => {
-                const { name, description } = values
+            <Typography variant="h5" component="h2" className={classes.title}>
+              {name}
+            </Typography>
+            <Box className={classes.text} textAlign="center">
+              {description}
+            </Box>
 
-                try {
-                  firebase.user(userId).update({
-                    username: name,
-                    description,
-                    countries: multi !== null ? multi : null
-                  })
+            <Typography variant="h6" component="h3" className={classes.title}>
+              Visited countries:
+            </Typography>
 
-                  dispatch(
-                    updateUser({
-                      userName: name,
-                      userDescription: description,
-                      countries: multi !== null ? multi : null
-                    })
-                  )
-
-                  setSubmitting(false)
-
-                  setSnackbarState({
-                    message: 'Profile was updated!',
-                    variant: 'success'
-                  })
-                } catch (error) {
-                  setSnackbarState({ message: error, variant: 'error' })
-                  setSubmitting(false)
-                }
-              }}
-            >
-              {({ isSubmitting }) => (
-                <Form>
-                  <Field
-                    type="text"
-                    name="name"
-                    label="Name"
-                    component={TextField}
-                    className={classes.textField}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
+            <div className="countries__chips">
+              {countries &&
+                countries.map(country => (
+                  <Chip
+                    label={country.label}
+                    key={country.label}
+                    className={classes.chip}
                   />
-
-                  <Field
-                    type="text"
-                    name="description"
-                    label="Introduction"
-                    component={TextField}
-                    className={classes.textField}
-                    multiline
-                    rows={6}
-                    rowsMax={8}
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                  />
-
-                  <CountrySelect
-                    multi={multi}
-                    handleChangeMulti={HandleChangeMulti}
-                  />
-
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="secondary"
-                    disabled={isSubmitting}
-                    aria-label="add"
-                    className={classes.button}
-                  >
-                    Save
-                    <EditIcon className={classes.rightIcon} />
-                  </Button>
-                </Form>
-              )}
-            </Formik>
+                ))}
+            </div>
           </Grid>
           <Grid item xs={6}>
-            {finishedRequest && <ImageUpload imageProps={imageProps} />}
+            <img
+              className={classes.image}
+              src={image}
+              alt={name}
+              title={name}
+            />
           </Grid>
         </Grid>
       </Paper>

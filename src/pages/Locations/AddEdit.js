@@ -56,22 +56,10 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
   const [edit, setEdit] = useState(false)
 
   const [locationLocal, setLocation] = useState({
-    id:
-      location && location.state !== undefined
-        ? location.state.location.id
-        : '',
-    title:
-      location && location.state !== undefined
-        ? location.state.location.title
-        : '',
-    description:
-      location && location.state !== undefined
-        ? location.state.location.description
-        : '',
-    imageURL:
-      location && location.state !== undefined
-        ? location.state.location.image
-        : ''
+    id: location ? location.state.location.id : '',
+    title: location ? location.state.location.title : '',
+    description: location ? location.state.location.description : '',
+    imageURL: location ? location.state.location.image : ''
   })
 
   const [initialSetup, setInitialSetup] = useState(true)
@@ -85,11 +73,7 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
   const steps = GetSteps()
 
   useEffect(() => {
-    if (
-      match &&
-      match.params.id !== undefined &&
-      (location && location.state === undefined)
-    ) {
+    if (match && match.params.id !== undefined && location === undefined) {
       const unsubscribe = firebase
         .locations()
         .child(userId)
