@@ -1,4 +1,5 @@
 import React from 'react'
+import { compose } from 'recompose'
 
 import { Router } from 'react-router-dom'
 
@@ -10,9 +11,11 @@ import { ThemeProvider } from '@material-ui/styles'
 
 import Routes from './routes/Routes'
 import MainMenu from './components/MainMenu'
+import Footer from './components/Footer'
 import history from './Helpers/History'
 
 import { WithAuthentication } from './components/Authentication'
+import { withSnackbar } from './components/Snackbar'
 
 let theme = createMuiTheme({
   palette: {
@@ -21,22 +24,29 @@ let theme = createMuiTheme({
     }
   }
 })
+
 theme = responsiveFontSizes(theme)
 
 const App = () => (
   <div className="App">
-    <React.Fragment>
+    <>
       <CssBaseline />
       <Router history={history}>
-        <ThemeProvider theme={theme}>
-          <MainMenu />
-          <Container fixed>
-            <Routes />
-          </Container>
-        </ThemeProvider>
+        <div className="content">
+          <ThemeProvider theme={theme}>
+            <MainMenu />
+            <Container fixed>
+              <Routes />
+            </Container>
+          </ThemeProvider>
+        </div>
+        <Footer />
       </Router>
-    </React.Fragment>
+    </>
   </div>
 )
 
-export default WithAuthentication(App)
+export default compose(
+  withSnackbar,
+  WithAuthentication
+)(App)
