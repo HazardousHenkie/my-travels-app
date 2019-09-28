@@ -51,6 +51,7 @@ const GetMessages = ({ firebase }) => {
         .orderByChild('userId')
         .equalTo(userId)
         .on('value', snapshot => {
+          console.log('here')
           const messagesObject = snapshot.val()
           if (messagesObject) {
             const sortedMessages = Object.keys(messagesObject).map(key => ({
@@ -81,11 +82,13 @@ const GetMessages = ({ firebase }) => {
       setLoading(false)
       setSnackbarState({ message: error, variant: 'error' })
     }
-    return () =>
+    return () => {
       firebase
-        .locations()
-        .child(userId)
+        .messages(userId)
+        .orderByChild('userId')
+        .equalTo(userId)
         .off('value')
+    }
   }, [userId, firebase, setSnackbarState])
 
   return (

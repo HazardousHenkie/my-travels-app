@@ -17,7 +17,7 @@ import { WithAuthorization } from '../../components/Authentication'
 import SnackbarContext from '../../components/Snackbar/Context'
 import { withFirebase } from '../../components/Firebase'
 import { updateUser } from '../../Redux/Actions'
-import CountrySelect from './CountrySelect'
+import CountrySelect from '../../components/CountrySelect'
 
 const ProfileScheme = Yup.object().shape({
   name: Yup.string().required('Required'),
@@ -60,8 +60,6 @@ const Profile = ({ firebase }) => {
     setMulti(value)
   }
 
-  console.log(firebase)
-
   useEffect(() => {
     const unsubscribe = firebase
       .user(userId)
@@ -89,8 +87,6 @@ const Profile = ({ firebase }) => {
       })
     return () => unsubscribe
   }, [firebase, setSnackbarState, userId])
-
-  console.log(firebase)
 
   const imageProps = {
     dbId: userId,
@@ -149,7 +145,7 @@ const Profile = ({ firebase }) => {
                 }
               }}
             >
-              {({ isSubmitting, isValid }) => (
+              {({ isSubmitting }) => (
                 <Form>
                   <Field
                     type="text"
@@ -185,7 +181,7 @@ const Profile = ({ firebase }) => {
                     type="submit"
                     variant="contained"
                     color="secondary"
-                    disabled={isSubmitting || !isValid}
+                    disabled={isSubmitting}
                     aria-label="add"
                     className={classes.button}
                   >
