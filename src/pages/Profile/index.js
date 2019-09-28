@@ -60,6 +60,8 @@ const Profile = ({ firebase }) => {
     setMulti(value)
   }
 
+  console.log(firebase)
+
   useEffect(() => {
     const unsubscribe = firebase
       .user(userId)
@@ -87,6 +89,8 @@ const Profile = ({ firebase }) => {
       })
     return () => unsubscribe
   }, [firebase, setSnackbarState, userId])
+
+  console.log(firebase)
 
   const imageProps = {
     dbId: userId,

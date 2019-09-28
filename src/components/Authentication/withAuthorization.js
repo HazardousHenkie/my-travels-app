@@ -9,6 +9,7 @@ import * as routes from '../../constants/routes'
 
 const withAuthorization = Component => {
   function WithAuthorization(props) {
+    console.log(history)
     useEffect(() => {
       const listener = props.firebase.auth.onAuthStateChanged(
         authUser => {
