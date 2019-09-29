@@ -35,13 +35,21 @@ const LocationCard = ({ location, edit, firebase }) => {
   const { setSnackbarState } = useContext(SnackbarContext)
   const { userId, userName } = useSelector(state => state.user)
   const classes = useStyles()
-  const { userNameLocation } = location
-  let userNameCard = ''
 
-  if (userNameLocation !== '' && userNameLocation !== undefined) {
+  const { userNameLocation, userIdLocation } = location
+  let userNameCard = ''
+  let userNameCardId = null
+
+  if (userIdLocation !== null && userIdLocation !== undefined) {
     userNameCard = userNameLocation
   } else {
     userNameCard = userName
+  }
+
+  if (userNameLocation !== '' && userNameLocation !== undefined) {
+    userNameCardId = userIdLocation
+  } else {
+    userNameCardId = userId
   }
 
   const RemoveLocation = id => {
@@ -73,10 +81,25 @@ const LocationCard = ({ location, edit, firebase }) => {
   return (
     <Grid item xs={4}>
       <Card key={location.id}>
+        {/* eslint-disable */}
         <CardHeader
-          avatar={<Avatar aria-label="author">{avatarUserName}</Avatar>}
+          avatar={
+            <Avatar
+              component={Link}
+              to={{
+                pathname: `${routes.profile}${userNameCardId}`,
+                state: {
+                  location
+                }
+              }}
+              aria-label="Go to user"
+            >
+              {avatarUserName}
+            </Avatar>
+          }
           title={location.title}
         />
+        {/* eslint-enable */}
 
         {location.image && (
           <CardMedia
