@@ -51,7 +51,6 @@ const GetMessages = ({ firebase }) => {
         .orderByChild('userId')
         .equalTo(userId)
         .on('value', snapshot => {
-          console.log('here')
           const messagesObject = snapshot.val()
           if (messagesObject) {
             const sortedMessages = Object.keys(messagesObject).map(key => ({
