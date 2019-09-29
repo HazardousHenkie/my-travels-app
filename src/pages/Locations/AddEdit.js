@@ -26,6 +26,8 @@ import SnackbarContext from '../../components/Snackbar/Context'
 import { WithAuthorization } from '../../components/Authentication'
 import { withFirebase } from '../../components/Firebase'
 
+import history from '../../Helpers/History'
+
 import './AddEdit.scss'
 
 const useStyles = makeStyles(theme => ({
@@ -56,10 +58,11 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
   const [edit, setEdit] = useState(false)
 
   const [locationLocal, setLocation] = useState({
-    id: location ? location.state.location.id : '',
-    title: location ? location.state.location.title : '',
-    description: location ? location.state.location.description : '',
-    imageURL: location ? location.state.location.image : ''
+    id: location && location.state ? location.state.location.id : '',
+    title: location && location.state ? location.state.location.title : '',
+    description:
+      location && location.state ? location.state.location.description : '',
+    imageURL: location && location.state ? location.state.location.image : ''
   })
 
   const [initialSetup, setInitialSetup] = useState(true)
@@ -91,6 +94,8 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
 
             setLoadedFile(locationObject.downloadURL)
             setFinishedRequest(true)
+          } else {
+            history.push(routes.home)
           }
         })
         .catch(removeError => {

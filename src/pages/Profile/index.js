@@ -12,6 +12,10 @@ import { WithAuthorization } from '../../components/Authentication'
 import SnackbarContext from '../../components/Snackbar/Context'
 import { withFirebase } from '../../components/Firebase'
 
+import history from '../../Helpers/History'
+
+import * as routes from '../../constants/routes'
+
 const useStyles = makeStyles(theme => ({
   rootPaper: {
     padding: theme.spacing(3, 2)
@@ -20,7 +24,8 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   text: {
-    marginTop: '20px'
+    marginTop: '20px',
+    marginBottom: '15px'
   },
   image: {
     maxWidth: '100%'
@@ -46,6 +51,8 @@ const Profile = ({ firebase, match }) => {
             description: snapshot.val().description,
             countries: snapshot.val().countries
           })
+        } else {
+          history.push(routes.home)
         }
       })
       .catch(removeError => {
@@ -55,8 +62,6 @@ const Profile = ({ firebase, match }) => {
   }, [firebase, setSnackbarState, match])
 
   const { image, name, description, countries } = user
-
-  console.log(user)
 
   return (
     <div className="profile">
@@ -79,20 +84,27 @@ const Profile = ({ firebase, match }) => {
               {description}
             </Box>
 
-            <Typography variant="h6" component="h3" className={classes.title}>
-              Visited countries:
-            </Typography>
+            {countries && (
+              <div className="countries">
+                <Typography
+                  variant="h6"
+                  component="h3"
+                  className={classes.title}
+                >
+                  Visited countries:
+                </Typography>
 
-            <div className="countries__chips">
-              {countries &&
-                countries.map(country => (
-                  <Chip
-                    label={country.label}
-                    key={country.label}
-                    className={classes.chip}
-                  />
-                ))}
-            </div>
+                <div className="countries__chips">
+                  {countries.map(country => (
+                    <Chip
+                      label={country.label}
+                      key={country.label}
+                      className={classes.chip}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </Grid>
           <Grid item xs={6}>
             <img
