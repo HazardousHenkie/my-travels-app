@@ -64,20 +64,38 @@ const SignUpForm = ({ firebase }) => {
           firebase
             .doSignInWithEmailAndPassword(email, password)
             .then(signInResult => {
-              // if new user dispach other like google?
-              console.log(signInResult)
-              firebase.user(signInResult.user.uid).set({
-                username: signInResult.user.email,
-                email: signInResult.user.email
-              })
-
-              dispatch(
-                addUser({
-                  loggedIn: true,
-                  userName: signInResult.user.displayName,
-                  userId: signInResult.user.uid
+              if (signInResult.additionalUserInfo.isNewUser) {
+                firebase.user(signInResult.user.uid).set({
+                  username: signInResult.user.email,
+                  email: signInResult.user.email
                 })
-              )
+
+                dispatch(
+                  addUser({
+                    loggedIn: true,
+                    userName: signInResult.user.displayName,
+                    userId: signInResult.user.uid
+                  })
+                )
+              } else {
+                firebase.user(signInResult.user.uid).once('value', snapshot => {
+                  dispatch(
+                    addUser({
+                      loggedIn: true,
+                      userName: snapshot.val().username,
+                      userDescription:
+                        snapshot.val().description !== null
+                          ? snapshot.val().description
+                          : '',
+                      countries:
+                        snapshot.val().countries !== undefined
+                          ? snapshot.val().countries
+                          : null,
+                      userId: signInResult.user.uid
+                    })
+                  )
+                })
+              }
 
               setSubmitting(false)
               setSnackbarState({ message: 'Logged in!', variant: 'success' })

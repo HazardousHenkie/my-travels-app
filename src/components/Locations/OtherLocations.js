@@ -28,52 +28,70 @@ const OtherLocations = ({ firebase }) => {
   const [loading, setLoading] = useState(true)
   const classes = useStyles()
 
+  // we actually don't want to get all locations now but we want to limit it
+  // unfortunately firebase has some constrains so this is not possible
+  // so since this is a small application we're splicing it below for now
   useEffect(() => {
     const unsubscribe = firebase
       .locations()
       .once('value')
-      .then(snapshot => {
-        if (snapshot.val() !== null) {
-          const locationObject = snapshot.val()
-          let userName = ''
-          let userIdLocation = null
+      .then(async snapshot => {
+        if (snapshot.exists()) {
+          const promises = []
 
-          Object.keys(locationObject).reduce((r, k) => {
-            let newLocationObject = []
+          snapshot.slice(0, 10).forEach(element => {
+            promises.push(firebase.user(element.key).once('value'))
+          })
 
-            if (k !== userId) {
-              const unsubscribeUser = firebase
-                .user(k)
-                .once('value', userSnapshot => {
-                  if (userSnapshot.val() !== null) {
-                    userIdLocation = userSnapshot.key
-                    userName = userSnapshot.val().username
-                  }
-                })
-                .then(() => {
-                  newLocationObject = Object.keys(locationObject[k]).map(
-                    key => ({
-                      userIdLocation,
-                      userNameLocation: userName,
-                      title: locationObject[k][key].location,
-                      image: locationObject[k][key].downloadURL,
-                      description: locationObject[k][key].description,
-                      id: key
-                    })
-                  )
+          const snapshotValues = snapshot.val()
 
-                  setLocations(r.concat(newLocationObject).slice(0, 10))
-                  setLoading(false)
-                })
-
-              return () => unsubscribeUser
-            }
-
-            return null
-          }, [])
-        } else {
-          setLocations([])
+          return Promise.all(promises).then(snapshots => ({
+            snapshots,
+            snapshotValues
+          }))
         }
+        setLocations([])
+        setLoading(false)
+        return null
+      })
+      .then(({ snapshots, snapshotValues }) => {
+        const userInformation = []
+
+        snapshots.forEach(userSnapshot => {
+          if (userSnapshot.exists()) {
+            userInformation.push({
+              userId: userSnapshot.key,
+              name: userSnapshot.val().username
+            })
+          }
+        })
+
+        const locationsArray = Object.keys(snapshotValues).reduce((r, k) => {
+          let newLocationObject = []
+
+          if (k !== userId) {
+            newLocationObject = Object.keys(snapshotValues[k]).map(key => ({
+              // find might not be good for performance on large objects but we are only getting 10 so it should be fine
+              userIdLocation: userInformation.find(user => user.userId === k)
+                .userId,
+              userNameLocation: userInformation.find(user => user.userId === k)
+                .name,
+              title: snapshotValues[k][key].location,
+              image: snapshotValues[k][key].downloadURL,
+              description: snapshotValues[k][key].description,
+              id: key
+            }))
+          }
+
+          return r.concat(newLocationObject)
+        }, [])
+
+        setLocations(locationsArray)
+
+        setLoading(false)
+      })
+      .catch(error => {
+        setSnackbarState({ message: error.message, variant: 'error' })
       })
     return () => unsubscribe
   }, [firebase, setSnackbarState, userId])
