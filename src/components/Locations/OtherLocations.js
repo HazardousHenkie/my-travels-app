@@ -28,18 +28,18 @@ const OtherLocations = ({ firebase }) => {
   const [loading, setLoading] = useState(true)
   const classes = useStyles()
 
-  // we actually don't want to get all locations now but we want to limit it
-  // unfortunately firebase has some constrains so this is not possible
-  // so since this is a small application we're splicing it below for now
   useEffect(() => {
     const unsubscribe = firebase
       .locations()
+      // if we have a lot of locations just added it might not show anything but this is better for performance
+      // we can add a limit on the bottom when everything is finished (like slice()) but for now wer'e not doing that
+      .limitToLast(10)
       .once('value')
       .then(async snapshot => {
         if (snapshot.exists()) {
           const promises = []
 
-          snapshot.slice(0, 10).forEach(element => {
+          snapshot.forEach(element => {
             promises.push(firebase.user(element.key).once('value'))
           })
 
