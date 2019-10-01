@@ -79,7 +79,7 @@ const LocationCard = ({ location, edit, firebase }) => {
   const avatarUserName = userNameCard.charAt(0)
 
   return (
-    <Grid item xs={4}>
+    <Grid item xs={12} sm={6} md={4}>
       <Card key={location.id}>
         {/* eslint-disable */}
         <CardHeader
