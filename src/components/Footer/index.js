@@ -12,7 +12,7 @@ const Footer = () => {
     <footer className="footer">
       <Container fixed>
         <Grid container justify="center" spacing={0}>
-          <Grid xs={8} item>
+          <Grid xs={12} sm={8} item>
             <div className="footer_inner">
               <Grid container justify="center" spacing={0}>
                 <Grid item>
