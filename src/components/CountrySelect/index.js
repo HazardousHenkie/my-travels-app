@@ -19,7 +19,8 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    marginTop: '16px'
+    marginTop: '16px',
+    maxWidth: 'calc(100% - 15px)'
   },
   input: {
     display: 'flex',

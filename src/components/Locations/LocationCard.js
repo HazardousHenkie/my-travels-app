@@ -70,7 +70,7 @@ const LocationCard = ({ location, edit, firebase }) => {
         }
       })
       .catch(removeError => {
-        setSnackbarState({ message: removeError, variant: 'error' })
+        setSnackbarState({ message: removeError.message, variant: 'error' })
       })
 
     setSnackbarState({ message: 'Location was removed!', variant: 'success' })

@@ -43,7 +43,7 @@ const ImageUpload = ({ firebase, imageProps }) => {
         load()
       })
       .catch(removeError => {
-        setSnackbarState({ message: removeError, variant: 'error' })
+        setSnackbarState({ message: removeError.message, variant: 'error' })
       })
   }
 

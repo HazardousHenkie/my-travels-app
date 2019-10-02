@@ -66,7 +66,7 @@ const AddStep2 = ({ firebase, step2Props }) => {
           setFinishedRequest(true)
         })
         .catch(removeError => {
-          setSnackbarState({ message: removeError, variant: 'error' })
+          setSnackbarState({ message: removeError.message, variant: 'error' })
         })
       return () => unsubscribe
     }

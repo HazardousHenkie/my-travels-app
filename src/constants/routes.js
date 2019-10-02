@@ -1,5 +1,5 @@
 export const home = '/'
-export const about = '/about'
+export const memo = '/memos'
 export const profile = '/profile/'
 export const myProfile = '/my-profile'
 export const locations = '/my-locations'
