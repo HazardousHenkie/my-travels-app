@@ -6,11 +6,16 @@
   .footer_inner {
     background-color: rgba(0, 0, 0, 0.08);
     border-radius: 4px;
-    height: 40px;
+    height: 70px;
     margin-bottom: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+
+    @media screen and (min-width: 540px) {
+      height: 40px;
+    }
 
     &__copyright {
       color: white;

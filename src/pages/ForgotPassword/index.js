@@ -17,7 +17,7 @@ const ForgotPasswordPage = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={5}>
+      <Grid item xs={12} sm={7} md={5}>
         <div className="sign_up">
           <div className="sign_up__form">
             <Paper className={`${classes.root} center-content`}>

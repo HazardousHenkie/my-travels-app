@@ -52,7 +52,7 @@ const Locations = ({ firebase }) => {
           setLoading(false)
         })
     } catch (error) {
-      setSnackbarState({ message: error, variant: 'error' })
+      setSnackbarState({ message: error.message, variant: 'error' })
     }
     return () =>
       firebase

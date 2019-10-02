@@ -99,7 +99,7 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
           }
         })
         .catch(removeError => {
-          setSnackbarState({ message: removeError, variant: 'error' })
+          setSnackbarState({ message: removeError.message, variant: 'error' })
         })
       return () => unsubscribe
     }
@@ -201,7 +201,7 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
             </Typography>
           </header>
           <Paper className={`${classes.rootPaper} center-content`}>
-            <Stepper activeStep={activeStep}>
+            <Stepper alternativeLabel activeStep={activeStep}>
               {steps.map((label, index) => {
                 const stepProps = {}
                 const labelProps = {}

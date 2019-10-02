@@ -28,11 +28,14 @@ const OtherLocations = ({ firebase }) => {
   const [loading, setLoading] = useState(true)
   const classes = useStyles()
 
+  // if we have a lot of locations just added it might not show anything
+  // but this is better for performance
+  // we can add a limit on the bottom when everything is finished
+  // (like slice()) but for now wer'e not doing that
+
   useEffect(() => {
     const unsubscribe = firebase
       .locations()
-      // if we have a lot of locations just added it might not show anything but this is better for performance
-      // we can add a limit on the bottom when everything is finished (like slice()) but for now wer'e not doing that
       .limitToLast(10)
       .once('value')
       .then(async snapshot => {
@@ -70,8 +73,9 @@ const OtherLocations = ({ firebase }) => {
           let newLocationObject = []
 
           if (k !== userId) {
+            // find might not be good for performance on large objects
+            // but we are only getting 10 so it should be fine
             newLocationObject = Object.keys(snapshotValues[k]).map(key => ({
-              // find might not be good for performance on large objects but we are only getting 10 so it should be fine
               userIdLocation: userInformation.find(user => user.userId === k)
                 .userId,
               userNameLocation: userInformation.find(user => user.userId === k)
