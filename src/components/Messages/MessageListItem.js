@@ -26,6 +26,9 @@ const useStyles = makeStyles(theme => ({
   },
   fab: {
     margin: '14px 8px'
+  },
+  secondaryAction: {
+    paddingRight: '90px'
   }
 }))
 
@@ -45,7 +48,7 @@ const MessageListItem = ({ firebase, message }) => {
 
   return (
     <div className="message_list_item">
-      <ListItem alignItems="flex-start">
+      <ListItem className={classes.secondaryAction} alignItems="flex-start">
         <ListItemText
           primary="Message"
           secondary={`${message.text} ${message.date}`}
@@ -89,7 +92,7 @@ const MessageListItem = ({ firebase, message }) => {
                     variant: 'success'
                   })
                 } catch (error) {
-                  setSnackbarState({ message: error, variant: 'error' })
+                  setSnackbarState({ message: error.message, variant: 'error' })
                   setSubmitting(false)
                 }
               }}

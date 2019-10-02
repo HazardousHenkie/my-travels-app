@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import MessageList from '../../components/Messages'
 import { WithAuthorization } from '../../components/Authentication'
 
-import './About.scss'
+import './Memo.scss'
 
 const useStyles = makeStyles(theme => ({
   rootPaper: {
@@ -19,19 +19,19 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const About = () => {
+const Memo = () => {
   const classes = useStyles()
 
   return (
-    <Grid container spacing={2}>
+    <Grid className="memos" container spacing={2}>
       <Grid item xs={12}>
-        <header className="about_header">
+        <header className="memos__header">
           <Typography variant="h5" component="h2" className={classes.title}>
-            About
+            Memo&apos;s
           </Typography>
         </header>
         <Paper className={`${classes.rootPaper} center-content`}>
-          <div className="About">
+          <div className="memo_list">
             <MessageList />
           </div>
         </Paper>
@@ -40,4 +40,4 @@ const About = () => {
   )
 }
 
-export default WithAuthorization(About)
+export default WithAuthorization(Memo)

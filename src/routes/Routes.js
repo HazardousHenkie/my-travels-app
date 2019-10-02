@@ -1,7 +1,7 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import Home from '../pages/Home'
-import About from '../pages/About'
+import Memo from '../pages/Memo'
 import Profile from '../pages/Profile'
 import MyProfile from '../pages/MyProfile'
 import Locations from '../pages/Locations'
@@ -15,7 +15,7 @@ const Routes = () => {
   return (
     <Switch>
       <Route path={routes.home} exact component={Home} />
-      <Route path={routes.about} exact component={About} />
+      <Route path={routes.memo} exact component={Memo} />
       <Route path={`${routes.profile}:id`} exact component={Profile} />
       <Route path={routes.myProfile} exact component={MyProfile} />
       <Route path={routes.locations} exact component={Locations} />

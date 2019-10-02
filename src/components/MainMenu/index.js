@@ -63,11 +63,11 @@ const MainMenu = () => {
         {authenticated > 0 && (
           <Button
             component={LinkRef}
-            to={routes.about}
+            to={routes.memo}
             className={classes.button}
             color="inherit"
           >
-            About
+            Memo&apos;s
           </Button>
         )}
 

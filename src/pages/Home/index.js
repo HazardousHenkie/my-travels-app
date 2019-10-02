@@ -27,7 +27,7 @@ const Home = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={5}>
+      <Grid item xs={12} sm={7} md={5}>
         <div className="Home">
           <header className="home_header">
             <Typography variant="h5" component="h2">
