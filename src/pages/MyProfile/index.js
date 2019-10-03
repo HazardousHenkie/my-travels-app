@@ -19,6 +19,8 @@ import { withFirebase } from '../../components/Firebase'
 import { updateUser } from '../../Redux/Actions'
 import CountrySelect from '../../components/CountrySelect'
 
+import RemoveAccount from '../../components/RemoveAccount'
+
 const ProfileScheme = Yup.object().shape({
   name: Yup.string().required('Required'),
   description: Yup.string().required('Required')
@@ -194,6 +196,8 @@ const Profile = ({ firebase }) => {
           </Grid>
           <Grid item xs={6}>
             {finishedRequest && <ImageUpload imageProps={imageProps} />}
+
+            <RemoveAccount />
           </Grid>
         </Grid>
       </Paper>
