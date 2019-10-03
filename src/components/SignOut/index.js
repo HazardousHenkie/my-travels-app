@@ -14,6 +14,7 @@ import SnackbarContext from '../Snackbar/Context'
 
 const useStyles = makeStyles(() => ({
   button: {
+    marginBottom: '10px',
     backgroundColor: 'rgba(0, 0, 0, 0.08)',
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.2)'

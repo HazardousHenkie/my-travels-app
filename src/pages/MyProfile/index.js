@@ -35,7 +35,8 @@ const useStyles = makeStyles(theme => ({
   },
   textField: {
     marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
+    maxWidth: 'calc(100% - 15px)'
   },
   button: {
     margin: theme.spacing(1)
@@ -101,7 +102,7 @@ const Profile = ({ firebase }) => {
     <div className="profile">
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <header className="about_header">
+          <header className="profile__header">
             <Typography variant="h5" component="h2" className={classes.title}>
               Profile
             </Typography>
@@ -110,7 +111,7 @@ const Profile = ({ firebase }) => {
       </Grid>
       <Paper className={`${classes.rootPaper} center-content`}>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <Formik
               initialValues={{
                 name: userName,
@@ -142,7 +143,7 @@ const Profile = ({ firebase }) => {
                     variant: 'success'
                   })
                 } catch (error) {
-                  setSnackbarState({ message: error, variant: 'error' })
+                  setSnackbarState({ message: error.message, variant: 'error' })
                   setSubmitting(false)
                 }
               }}
@@ -194,7 +195,7 @@ const Profile = ({ firebase }) => {
               )}
             </Formik>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             {finishedRequest && <ImageUpload imageProps={imageProps} />}
 
             <RemoveAccount />

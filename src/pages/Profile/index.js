@@ -56,7 +56,7 @@ const Profile = ({ firebase, match }) => {
         }
       })
       .catch(removeError => {
-        setSnackbarState({ message: removeError, variant: 'error' })
+        setSnackbarState({ message: removeError.message, variant: 'error' })
       })
     return () => unsubscribe
   }, [firebase, setSnackbarState, match])
@@ -66,8 +66,8 @@ const Profile = ({ firebase, match }) => {
   return (
     <div className="profile">
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <header className="about_header">
+        <Grid item xs={12} sm={6}>
+          <header className="profile__header">
             <Typography variant="h5" component="h2" className={classes.title}>
               Profile
             </Typography>
@@ -76,7 +76,7 @@ const Profile = ({ firebase, match }) => {
       </Grid>
       <Paper className={`${classes.rootPaper} center-content`}>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <Typography variant="h5" component="h2" className={classes.title}>
               {name}
             </Typography>
@@ -106,7 +106,7 @@ const Profile = ({ firebase, match }) => {
               </div>
             )}
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} sm={6}>
             <img
               className={classes.image}
               src={image}

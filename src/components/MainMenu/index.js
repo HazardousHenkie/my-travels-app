@@ -14,17 +14,23 @@ import SignOutButton from '../SignOut'
 
 import './MainMenu.scss'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   appBar: {
     backgroundColor: 'transparent',
     boxShadow: 'none'
   },
   toolBar: {
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    marginTop: '10px',
+    [theme.breakpoints.up('sm')]: {
+      justifyContent: 'flex-end'
+    }
   },
   button: {
     backgroundColor: 'rgba(0, 0, 0, 0.08)',
     marginRight: '10px',
+    marginBottom: '10px',
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.2)'
     }
@@ -57,11 +63,11 @@ const MainMenu = () => {
         {authenticated > 0 && (
           <Button
             component={LinkRef}
-            to={routes.about}
+            to={routes.memo}
             className={classes.button}
             color="inherit"
           >
-            About
+            Memo&apos;s
           </Button>
         )}
 

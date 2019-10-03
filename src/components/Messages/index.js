@@ -79,7 +79,7 @@ const GetMessages = ({ firebase }) => {
         })
     } catch (error) {
       setLoading(false)
-      setSnackbarState({ message: error, variant: 'error' })
+      setSnackbarState({ message: error.message, variant: 'error' })
     }
     return () => {
       firebase
@@ -111,7 +111,7 @@ const GetMessages = ({ firebase }) => {
               variant: 'success'
             })
           } catch (error) {
-            setSnackbarState({ message: error, variant: 'error' })
+            setSnackbarState({ message: error.message, variant: 'error' })
             setSubmitting(false)
           }
         }}

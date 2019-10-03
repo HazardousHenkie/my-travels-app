@@ -58,7 +58,7 @@ const ForgotPassword = ({ firebase }) => {
               message: 'Password reset e-mail has been send',
               variant: 'success'
             })
-            history.push(routes.about)
+            history.push(routes.memo)
           } catch (error) {
             setSubmitting(false)
             setSnackbarState({ message: error.message, variant: 'error' })
