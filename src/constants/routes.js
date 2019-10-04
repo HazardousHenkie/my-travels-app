@@ -7,4 +7,3 @@ export const signUp = '/sign-up'
 export const forgotPassword = '/forgot-password'
 export const addLocation = '/add-location'
 export const editLocation = '/edit-location/'
-
