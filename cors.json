@@ -1,0 +1,7 @@
+[
+  {
+    "origin": ["https://my-travels-react.herokuapp.com"],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]

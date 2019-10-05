@@ -34,14 +34,13 @@ const SignOutButton = ({ firebase }) => {
       () => {
         dispatch(addUser({ loggedin: false, userName: '', userId: '' }))
         setSnackbarState({ message: 'Logged out', variant: 'error' })
+        history.push(routes.home)
       },
       error => {
         setSnackbarState({ message: 'Sign Out Error', variant: 'error' })
         error('Sign Out Error', error)
       }
     )
-
-    history.push(routes.home)
   }
 
   return (

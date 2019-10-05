@@ -80,19 +80,18 @@ const SignInGoogle = ({ firebase }) => {
       <p className="signin_google__text">
         or alternatively Sign In with Google!
       </p>
-      {/* <div onClick={onSubmit}> */}
-      <Button
-        onClick={onSubmit}
-        type="submit"
-        variant="contained"
-        color="secondary"
-        className={classes.button}
-      >
-        <Group className={classes.leftIcon} />
-        Sign In with Google
-      </Button>
+      <form onSubmit={onSubmit}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+        >
+          <Group className={classes.leftIcon} />
+          Sign In with Google
+        </Button>
+      </form>
     </div>
-    // </div>
   )
 }
 
