@@ -3,7 +3,7 @@
   grid-row-start: 2;
   grid-row-end: 3;
 
-  .footer_inner {
+  &__inner {
     background-color: rgba(0, 0, 0, 0.08);
     border-radius: 4px;
     height: 70px;
@@ -16,16 +16,16 @@
     @media screen and (min-width: 540px) {
       height: 40px;
     }
+  }
 
-    &__copyright {
-      color: white;
-      font-size: 0.875rem;
-    }
+  &__copyright {
+    color: white;
+    font-size: 0.875rem;
+  }
 
-    &__image_copyright {
-      color: white;
-      font-size: 0.875rem;
-      margin-left: 3px;
-    }
+  &__image_copyright {
+    color: white;
+    font-size: 0.875rem;
+    margin-left: 3px;
   }
 }

@@ -71,7 +71,7 @@ const CustomSnackbar = () => {
         action={[
           <IconButton
             key="close"
-            aria-label="close"
+            aria-label="Close"
             color="inherit"
             onClick={handleClose}
           >

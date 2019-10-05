@@ -153,9 +153,9 @@ const Profile = ({ firebase }) => {
                   <Field
                     type="text"
                     name="name"
-                    label="Name"
                     component={TextField}
                     className={classes.textField}
+                    label="Name"
                     variant="outlined"
                     margin="normal"
                     fullWidth
@@ -164,9 +164,9 @@ const Profile = ({ firebase }) => {
                   <Field
                     type="text"
                     name="description"
-                    label="Introduction"
                     component={TextField}
                     className={classes.textField}
+                    label="Introduction"
                     multiline
                     rows={6}
                     rowsMax={8}
@@ -185,7 +185,6 @@ const Profile = ({ firebase }) => {
                     variant="contained"
                     color="secondary"
                     disabled={isSubmitting}
-                    aria-label="add"
                     className={classes.button}
                   >
                     Save

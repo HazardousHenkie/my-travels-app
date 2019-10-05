@@ -35,6 +35,7 @@ const App = () => (
         <div className="content">
           <ThemeProvider theme={theme}>
             <MainMenu />
+
             <Container fixed>
               <Routes />
             </Container>

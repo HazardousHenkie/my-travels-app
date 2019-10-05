@@ -99,9 +99,9 @@ const SignUpForm = ({ firebase }) => {
             <Field
               type="text"
               name="username"
-              label="username"
               component={TextField}
               className={classes.textField}
+              label="Username"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -109,9 +109,9 @@ const SignUpForm = ({ firebase }) => {
             <Field
               type="text"
               name="email"
-              label="email"
               component={TextField}
               className={classes.textField}
+              label="E-mail"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -119,9 +119,9 @@ const SignUpForm = ({ firebase }) => {
             <Field
               type="password"
               name="password"
-              label="Password"
               component={TextField}
               className={classes.textField}
+              label="Password"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -129,9 +129,9 @@ const SignUpForm = ({ firebase }) => {
             <Field
               type="password"
               name="passwordConfirmation"
-              label="Confirm Password"
               component={TextField}
               className={classes.textField}
+              label="Confirm Password"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -142,7 +142,6 @@ const SignUpForm = ({ firebase }) => {
               variant="contained"
               color="secondary"
               disabled={isSubmitting || !isValid}
-              aria-label="signUp"
               className={classes.button}
             >
               <Email className={classes.leftIcon} />

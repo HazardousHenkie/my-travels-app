@@ -1,8 +1,10 @@
 import React, { useState, useContext } from 'react'
 import shortid from 'shortid'
+
 import { FilePond, registerPlugin } from 'react-filepond'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview'
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
+
 import { withFirebase } from '../Firebase'
 import SnackbarContext from '../Snackbar/Context'
 
@@ -10,6 +12,7 @@ import 'filepond/dist/filepond.min.css'
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview)
+
 const ImageUpload = ({ firebase, imageProps }) => {
   const {
     intialFiles,
@@ -48,10 +51,11 @@ const ImageUpload = ({ firebase, imageProps }) => {
   }
 
   return (
-    <div className="imageUpload">
+    <div className="image_upload">
       <FilePond
         files={files}
         allowMultiple={false}
+        aria-label="Upload image"
         maxFiles={1}
         onupdatefiles={fileItems => {
           setFiles(fileItems.map(fileItem => fileItem.file))
