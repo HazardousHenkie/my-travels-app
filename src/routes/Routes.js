@@ -1,5 +1,8 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
+
+import * as routes from '../constants/routes'
+
 import Home from '../pages/Home'
 import Memo from '../pages/Memo'
 import Profile from '../pages/Profile'
@@ -9,7 +12,6 @@ import SignUp from '../pages/SignUp'
 import ForgotPassword from '../pages/ForgotPassword'
 import AddEdit from '../pages/Locations/AddEdit'
 import Error from '../pages/error'
-import * as routes from '../constants/routes'
 
 const Routes = () => {
   return (
