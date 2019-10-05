@@ -70,11 +70,11 @@ const ForgotPassword = ({ firebase }) => {
             <Field
               type="text"
               name="email"
-              label="email"
               component={TextField}
               className={classes.textField}
               variant="outlined"
               margin="normal"
+              label="E-mail"
               fullWidth
             />
 
@@ -83,7 +83,6 @@ const ForgotPassword = ({ firebase }) => {
               variant="contained"
               color="secondary"
               disabled={isSubmitting || !isValid}
-              aria-label="resetPasword"
               className={classes.button}
             >
               <Email className={classes.leftIcon} />

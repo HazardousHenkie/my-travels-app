@@ -151,16 +151,21 @@ const CustomizedDialogs = ({ firebase }) => {
 
   return (
     <div>
-      <Button variant="outlined" color="secondary" onClick={HandleClickOpen}>
+      <Button
+        variant="outlined"
+        color="secondary"
+        aria-label="Delete Account"
+        onClick={HandleClickOpen}
+      >
         Delete Account
       </Button>
 
       <Dialog
         onClose={HandleClose}
-        aria-labelledby="customized-dialog-title"
+        aria-labelledby="delete account"
         open={open}
       >
-        <DialogTitle id="customized-dialog-title" onClose={HandleClose}>
+        <DialogTitle id="delete-account" onClose={HandleClose}>
           Remove Account
         </DialogTitle>
         <DialogContent dividers>

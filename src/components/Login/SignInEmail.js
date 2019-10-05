@@ -113,8 +113,8 @@ const SignUpForm = ({ firebase }) => {
             <Field
               type="text"
               name="email"
-              label="email"
               component={TextField}
+              label="E-mail"
               className={classes.textField}
               variant="outlined"
               margin="normal"
@@ -123,8 +123,8 @@ const SignUpForm = ({ firebase }) => {
             <Field
               type="password"
               name="password"
-              label="Password"
               component={TextField}
+              label="Password"
               className={classes.textField}
               variant="outlined"
               margin="normal"
@@ -142,7 +142,6 @@ const SignUpForm = ({ firebase }) => {
               variant="contained"
               color="secondary"
               disabled={isSubmitting || !isValid}
-              aria-label="signUp"
               className={classes.button}
             >
               <Email className={classes.leftIcon} />

@@ -1,10 +1,12 @@
 import React, { useContext } from 'react'
 import { useDispatch } from 'react-redux'
+
 import Button from '@material-ui/core/Button'
 import Group from '@material-ui/icons/Group'
 import { makeStyles } from '@material-ui/core/styles'
-import { addUser } from '../../Redux/Actions'
 import * as routes from '../../constants/routes'
+import { addUser } from '../../Redux/Actions'
+
 import history from '../../Helpers/History'
 import { withFirebase } from '../Firebase'
 import SnackbarContext from '../Snackbar/Context'

@@ -35,7 +35,6 @@ const LocationsIndex = () => {
               component={Link}
               variant="extended"
               color="secondary"
-              aria-label="add"
               to={routes.addLocation}
               className={classes.fab}
             >

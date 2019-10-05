@@ -121,9 +121,9 @@ const GetMessages = ({ firebase }) => {
             <Field
               type="text"
               name="message"
-              label="Message"
               component={TextField}
               className={classes.textField}
+              label="Message"
               variant="outlined"
               margin="normal"
               fullWidth
@@ -142,7 +142,7 @@ const GetMessages = ({ firebase }) => {
           </Form>
         )}
       </Formik>
-      {loading && <CircularProgress className="messageLoading" />}
+      {loading && <CircularProgress className="message_loading" />}
 
       <List className={classes.root}>
         <TransitionGroup className="messages_list">
