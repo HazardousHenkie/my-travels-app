@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { useSelector } from 'react-redux'
+
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
@@ -7,7 +8,9 @@ import EditIcon from '@material-ui/icons/Edit'
 import Button from '@material-ui/core/Button'
 import { Formik, Form, Field } from 'formik'
 import { TextField } from 'formik-material-ui'
+
 import * as Yup from 'yup'
+
 import SnackbarContext from '../Snackbar/Context'
 import { withFirebase } from '../Firebase'
 
@@ -35,11 +38,11 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
   const { id, title, description, imageURL } = initialLocation
 
   return (
-    <div className="locations_add_step_one">
+    <div className="locations__add_step_one">
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <div className="locations_inner">
-            <header className="locations_header">
+          <div className="locations__inner">
+            <header className="locations__header">
               <Typography variant="h5" component="h2" className={classes.title}>
                 Title and content
               </Typography>
@@ -115,8 +118,8 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
                 <Field
                   type="text"
                   name="location"
-                  label="location"
                   component={TextField}
+                  label="Location"
                   variant="outlined"
                   margin="normal"
                   fullWidth
@@ -125,8 +128,8 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
                 <Field
                   type="text"
                   name="descriptionForm"
-                  label="Introduction"
                   component={TextField}
+                  label="Introduction"
                   multiline
                   rows={6}
                   rowsMax={8}
@@ -140,7 +143,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
                   variant="contained"
                   color="secondary"
                   disabled={isSubmitting}
-                  aria-label="add"
+                  aria-label="Add title and description"
                   className={classes.button}
                 >
                   Save

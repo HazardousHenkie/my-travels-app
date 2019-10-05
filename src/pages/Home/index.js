@@ -28,14 +28,14 @@ const Home = () => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} sm={7} md={5}>
-        <div className="Home">
-          <header className="home_header">
+        <div className="home">
+          <header className="home__header">
             <Typography variant="h5" component="h2">
               {!loggedIn ? 'Welcome!' : `Welcome back, ${userName}!`}
             </Typography>
           </header>
           {!loggedIn && (
-            <div className="signup_forms">
+            <div className="home__signup_forms">
               <Paper className={`${classes.root} center-content`}>
                 <SignInEmail />
                 <SignInGoogle />

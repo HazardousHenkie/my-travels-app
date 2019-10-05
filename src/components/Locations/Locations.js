@@ -72,7 +72,7 @@ const Locations = ({ firebase }) => {
           </header>
         </div>
 
-        {loading && <CircularProgress className="messageLoading" />}
+        {loading && <CircularProgress className="message_loading" />}
 
         {locations && (
           <TransitionGroup component={Grid} container spacing={2}>

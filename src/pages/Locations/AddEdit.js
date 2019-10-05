@@ -225,7 +225,7 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
             </Stepper>
 
             {!finishedRequest && (
-              <CircularProgress className="messageLoading" />
+              <CircularProgress className="message_loading" />
             )}
 
             <div>

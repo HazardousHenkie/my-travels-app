@@ -50,7 +50,7 @@ const MainMenu = () => {
 
   return (
     <AppBar className={classes.appBar} position="static">
-      <Toolbar className={classes.toolBar}>
+      <Toolbar role="menu" className={classes.toolBar}>
         <Button
           component={LinkRef}
           to={routes.home}

@@ -13,16 +13,16 @@ const Footer = () => {
       <Container fixed>
         <Grid container justify="center" spacing={0}>
           <Grid xs={12} sm={8} item>
-            <div className="footer_inner">
+            <div className="footer__inner">
               <Grid container justify="center" spacing={0}>
                 <Grid item>
-                  <div className="footer_inner__copyright">
+                  <div className="footer__copyright">
                     {`Kyle @${moment().format('YYYY')} - `}
                   </div>
                 </Grid>
                 <Grid item>
                   <a
-                    className="footer_inner__image_copyright"
+                    className="footer__image_copyright"
                     href="https://www.freepik.com/free-photos-vectors/background"
                   >
                     Background vector created by freepik - www.freepik.com

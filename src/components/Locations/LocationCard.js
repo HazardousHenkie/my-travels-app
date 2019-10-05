@@ -119,7 +119,7 @@ const LocationCard = ({ location, edit, firebase }) => {
           <CardActions disableSpacing>
             <IconButton
               onClick={() => RemoveLocation(location.id)}
-              aria-label="delete location"
+              aria-label="Delete location"
               className={classes.removeButton}
             >
               <DeleteIcon />
@@ -133,7 +133,7 @@ const LocationCard = ({ location, edit, firebase }) => {
                   location
                 }
               }}
-              aria-label="edit location"
+              aria-label="Edit location"
             >
               <EditIcon />
             </IconButton>

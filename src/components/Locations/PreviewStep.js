@@ -17,11 +17,11 @@ const PreviewStep = ({ location, uploadedFile }) => {
   const { title, description } = location
 
   return (
-    <div className="locations_add_step_one">
+    <div className="location_preview">
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <div className="locations_inner">
-            <header className="locations_header">
+          <div className="location_preview__inner">
+            <header className="location_preview__header">
               <Typography variant="h5" component="h2" className={classes.title}>
                 Preview
               </Typography>
