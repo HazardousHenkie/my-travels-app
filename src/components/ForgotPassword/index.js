@@ -72,6 +72,7 @@ const ForgotPassword = ({ firebase }) => {
               name="email"
               component={TextField}
               className={classes.textField}
+              id="email"
               variant="outlined"
               margin="normal"
               label="E-mail"

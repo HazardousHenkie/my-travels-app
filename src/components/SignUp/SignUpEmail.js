@@ -101,6 +101,7 @@ const SignUpForm = ({ firebase }) => {
               name="username"
               component={TextField}
               className={classes.textField}
+              id="username"
               label="Username"
               variant="outlined"
               margin="normal"
@@ -111,6 +112,7 @@ const SignUpForm = ({ firebase }) => {
               name="email"
               component={TextField}
               className={classes.textField}
+              id="name"
               label="E-mail"
               variant="outlined"
               margin="normal"
@@ -121,6 +123,7 @@ const SignUpForm = ({ firebase }) => {
               name="password"
               component={TextField}
               className={classes.textField}
+              id="password"
               label="Password"
               variant="outlined"
               margin="normal"
@@ -131,6 +134,7 @@ const SignUpForm = ({ firebase }) => {
               name="passwordConfirmation"
               component={TextField}
               className={classes.textField}
+              id="passwordConfirmation"
               label="Confirm Password"
               variant="outlined"
               margin="normal"

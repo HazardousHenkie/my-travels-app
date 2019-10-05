@@ -56,6 +56,7 @@ const MainMenu = () => {
           to={routes.home}
           className={classes.button}
           color="inherit"
+          aria-label="Home"
         >
           Home
         </Button>
@@ -66,6 +67,7 @@ const MainMenu = () => {
             to={routes.memo}
             className={classes.button}
             color="inherit"
+            aria-label="Memo"
           >
             Memo&apos;s
           </Button>
@@ -77,6 +79,7 @@ const MainMenu = () => {
             className={classes.button}
             to={routes.locations}
             color="inherit"
+            aria-label="Locations"
           >
             My Locations
           </Button>
@@ -87,6 +90,7 @@ const MainMenu = () => {
             component={LinkRef}
             to={routes.myProfile}
             className={classes.button}
+            aria-label="My Profile"
             color="inherit"
           >
             Profile

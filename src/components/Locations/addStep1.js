@@ -119,6 +119,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
                   type="text"
                   name="location"
                   component={TextField}
+                  id="location"
                   label="Location"
                   variant="outlined"
                   margin="normal"
@@ -129,6 +130,7 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
                   type="text"
                   name="descriptionForm"
                   component={TextField}
+                  id="descriptionForm"
                   label="Introduction"
                   multiline
                   rows={6}

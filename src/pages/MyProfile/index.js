@@ -155,6 +155,7 @@ const Profile = ({ firebase }) => {
                     name="name"
                     component={TextField}
                     className={classes.textField}
+                    id="name"
                     label="Name"
                     variant="outlined"
                     margin="normal"
@@ -167,6 +168,7 @@ const Profile = ({ firebase }) => {
                     component={TextField}
                     className={classes.textField}
                     label="Introduction"
+                    id="description"
                     multiline
                     rows={6}
                     rowsMax={8}

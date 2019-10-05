@@ -123,6 +123,7 @@ const GetMessages = ({ firebase }) => {
               name="message"
               component={TextField}
               className={classes.textField}
+              id="message"
               label="Message"
               variant="outlined"
               margin="normal"

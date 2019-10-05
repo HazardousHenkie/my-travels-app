@@ -104,6 +104,7 @@ const MessageListItem = ({ firebase, message }) => {
                     name="editMessage"
                     component={TextField}
                     className={classes.textField}
+                    id="editMessage"
                     label="Message"
                     variant="outlined"
                     margin="normal"

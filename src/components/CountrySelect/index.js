@@ -100,6 +100,9 @@ const Control = props => {
     <TextField
       fullWidth
       variant="outlined"
+      id="CountrySelect"
+      name="CountrySelect"
+      aria-label="CountrySelect"
       className={classes.textField}
       InputProps={{
         inputComponent,
