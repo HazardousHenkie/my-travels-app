@@ -94,7 +94,7 @@ const SignUpForm = ({ firebase }) => {
           }
         }}
       >
-        {({ isSubmitting, isValid }) => (
+        {({ isSubmitting }) => (
           <Form>
             <Field
               type="text"
@@ -145,7 +145,7 @@ const SignUpForm = ({ firebase }) => {
               type="submit"
               variant="contained"
               color="secondary"
-              disabled={isSubmitting || !isValid}
+              disabled={isSubmitting}
               className={classes.button}
             >
               <Email className={classes.leftIcon} />
