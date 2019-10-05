@@ -32,7 +32,6 @@ const OtherLocations = ({ firebase }) => {
   // but this is better for performance
   // we can add a limit on the bottom when everything is finished
   // (like slice()) but for now wer'e not doing that
-
   useEffect(() => {
     const unsubscribe = firebase
       .locations()
@@ -55,44 +54,47 @@ const OtherLocations = ({ firebase }) => {
         }
         setLocations([])
         setLoading(false)
-        return null
+        return snapshot
       })
       .then(({ snapshots, snapshotValues }) => {
-        const userInformation = []
+        if (snapshots) {
+          const userInformation = []
 
-        snapshots.forEach(userSnapshot => {
-          if (userSnapshot.exists()) {
-            userInformation.push({
-              userId: userSnapshot.key,
-              name: userSnapshot.val().username
-            })
-          }
-        })
+          snapshots.forEach(userSnapshot => {
+            if (userSnapshot.exists()) {
+              userInformation.push({
+                userId: userSnapshot.key,
+                name: userSnapshot.val().username
+              })
+            }
+          })
 
-        const locationsArray = Object.keys(snapshotValues).reduce((r, k) => {
-          let newLocationObject = []
+          const locationsArray = Object.keys(snapshotValues).reduce((r, k) => {
+            let newLocationObject = []
 
-          if (k !== userId) {
-            // find might not be good for performance on large objects
-            // but we are only getting 10 so it should be fine
-            newLocationObject = Object.keys(snapshotValues[k]).map(key => ({
-              userIdLocation: userInformation.find(user => user.userId === k)
-                .userId,
-              userNameLocation: userInformation.find(user => user.userId === k)
-                .name,
-              title: snapshotValues[k][key].location,
-              image: snapshotValues[k][key].downloadURL,
-              description: snapshotValues[k][key].description,
-              id: key
-            }))
-          }
+            if (k !== userId) {
+              // find might not be good for performance on large objects
+              // but we are only getting 10 so it should be fine
+              newLocationObject = Object.keys(snapshotValues[k]).map(key => ({
+                userIdLocation: userInformation.find(user => user.userId === k)
+                  .userId,
+                userNameLocation: userInformation.find(
+                  user => user.userId === k
+                ).name,
+                title: snapshotValues[k][key].location,
+                image: snapshotValues[k][key].downloadURL,
+                description: snapshotValues[k][key].description,
+                id: key
+              }))
+            }
 
-          return r.concat(newLocationObject)
-        }, [])
+            return r.concat(newLocationObject)
+          }, [])
 
-        setLocations(locationsArray)
+          setLocations(locationsArray)
 
-        setLoading(false)
+          setLoading(false)
+        }
       })
       .catch(error => {
         setSnackbarState({ message: error.message, variant: 'error' })
