@@ -50,19 +50,17 @@ const ForgotPassword = ({ firebase }) => {
         onSubmit={async (values, { setSubmitting }) => {
           const { email } = values
 
-          try {
-            await firebase.doPasswordReset(email)
-
-            setSubmitting(false)
-            setSnackbarState({
-              message: 'Password reset e-mail has been send',
-              variant: 'success'
-            })
-            history.push(routes.memo)
-          } catch (error) {
+          await firebase.doPasswordReset(email).catch(error => {
             setSubmitting(false)
             setSnackbarState({ message: error.message, variant: 'error' })
-          }
+          })
+
+          setSubmitting(false)
+          setSnackbarState({
+            message: 'Password reset e-mail has been send',
+            variant: 'success'
+          })
+          history.push(routes.memo)
         }}
       >
         {({ isSubmitting, isValid }) => (

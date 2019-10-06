@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Profile = ({ firebase }) => {
+const MyProfile = ({ firebase }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const { setSnackbarState } = useContext(SnackbarContext)
@@ -62,7 +62,6 @@ const Profile = ({ firebase }) => {
   const HandleChangeMulti = value => {
     setMulti(value)
   }
-
   useEffect(() => {
     const unsubscribe = firebase
       .user(userId)
@@ -121,31 +120,35 @@ const Profile = ({ firebase }) => {
               onSubmit={(values, { setSubmitting }) => {
                 const { name, description } = values
 
-                try {
-                  firebase.user(userId).update({
+                firebase
+                  .user(userId)
+                  .update({
                     username: name,
                     description,
                     countries: multi !== null ? multi : null
                   })
-
-                  dispatch(
-                    updateUser({
-                      userName: name,
-                      userDescription: description,
-                      countries: multi !== null ? multi : null
+                  .catch(error => {
+                    setSnackbarState({
+                      message: error.message,
+                      variant: 'error'
                     })
-                  )
-
-                  setSubmitting(false)
-
-                  setSnackbarState({
-                    message: 'Profile was updated!',
-                    variant: 'success'
+                    setSubmitting(false)
                   })
-                } catch (error) {
-                  setSnackbarState({ message: error.message, variant: 'error' })
-                  setSubmitting(false)
-                }
+
+                dispatch(
+                  updateUser({
+                    userName: name,
+                    userDescription: description,
+                    countries: multi !== null ? multi : null
+                  })
+                )
+
+                setSubmitting(false)
+
+                setSnackbarState({
+                  message: 'Profile was updated!',
+                  variant: 'success'
+                })
               }}
             >
               {({ isSubmitting }) => (
@@ -210,4 +213,4 @@ const Profile = ({ firebase }) => {
 export default compose(
   withFirebase,
   WithAuthorization
-)(Profile)
+)(MyProfile)

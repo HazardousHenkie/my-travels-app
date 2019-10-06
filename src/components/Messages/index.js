@@ -98,22 +98,23 @@ const GetMessages = ({ firebase }) => {
         onSubmit={(values, { setSubmitting, resetForm, initialValues }) => {
           const { message } = values
 
-          try {
-            firebase.messages().push({
+          firebase
+            .messages()
+            .push({
               text: message,
               userId,
               createdDate: firebase.firebase().database.ServerValue.TIMESTAMP
             })
-            setSubmitting(false)
-            resetForm(initialValues)
-            setSnackbarState({
-              message: 'Message was created!',
-              variant: 'success'
+            .catch(error => {
+              setSnackbarState({ message: error.message, variant: 'error' })
+              setSubmitting(false)
             })
-          } catch (error) {
-            setSnackbarState({ message: error.message, variant: 'error' })
-            setSubmitting(false)
-          }
+          setSubmitting(false)
+          resetForm(initialValues)
+          setSnackbarState({
+            message: 'Message was created!',
+            variant: 'success'
+          })
         }}
       >
         {({ isSubmitting, isValid }) => (

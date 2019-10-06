@@ -14,11 +14,7 @@ import SnackbarContext from '../Snackbar/Context'
 
 const useStyles = makeStyles(() => ({
   button: {
-    marginBottom: '10px',
-    backgroundColor: 'rgba(0, 0, 0, 0.08)',
-    '&:hover': {
-      backgroundColor: 'rgba(0, 0, 0, 0.2)'
-    }
+    marginBottom: '10px'
   }
 }))
 
@@ -44,7 +40,12 @@ const SignOutButton = ({ firebase }) => {
   }
 
   return (
-    <Button onClick={handleClick} className={classes.button} color="inherit">
+    <Button
+      onClick={handleClick}
+      variant="contained"
+      color="secondary"
+      className={classes.button}
+    >
       Sign Out
     </Button>
   )

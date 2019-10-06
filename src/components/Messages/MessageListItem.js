@@ -80,21 +80,25 @@ const MessageListItem = ({ firebase, message }) => {
               onSubmit={(values, { setSubmitting }) => {
                 const { editMessage } = values
 
-                try {
-                  firebase.message(message.uid).update({
+                firebase
+                  .message(message.uid)
+                  .update({
                     text: editMessage
                   })
-                  setSubmitting(false)
-                  setPanel(false)
-
-                  setSnackbarState({
-                    message: 'Message was created!',
-                    variant: 'success'
+                  .catch(error => {
+                    setSnackbarState({
+                      message: error.message,
+                      variant: 'error'
+                    })
+                    setSubmitting(false)
                   })
-                } catch (error) {
-                  setSnackbarState({ message: error.message, variant: 'error' })
-                  setSubmitting(false)
-                }
+                setSubmitting(false)
+                setPanel(false)
+
+                setSnackbarState({
+                  message: 'Message was created!',
+                  variant: 'success'
+                })
               }}
             >
               {({ isSubmitting, isValid }) => (

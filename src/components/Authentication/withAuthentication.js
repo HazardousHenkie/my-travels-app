@@ -52,7 +52,7 @@ const withAuthentication = Component => {
         }
       })
 
-      return () => listener
+      return () => listener()
     }, [setAuthenticated, firebase, dispatch, loggedIn, userId])
     return (
       <AuthUserContext.Provider value={authenticated}>

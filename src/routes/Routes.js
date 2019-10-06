@@ -11,6 +11,7 @@ import Locations from '../pages/Locations'
 import SignUp from '../pages/SignUp'
 import ForgotPassword from '../pages/ForgotPassword'
 import AddEdit from '../pages/Locations/AddEdit'
+import LogOut from '../pages/LogOut'
 import Error from '../pages/error'
 
 const Routes = () => {
@@ -25,6 +26,7 @@ const Routes = () => {
       <Route path={routes.forgotPassword} exact component={ForgotPassword} />
       <Route path={routes.addLocation} exact component={AddEdit} />
       <Route path={`${routes.editLocation}:id`} exact component={AddEdit} />
+      <Route path={routes.signOut} exact component={LogOut} />
       <Route component={Error} />
     </Switch>
   )

@@ -58,59 +58,61 @@ const AddStep1 = ({ firebase, setEdit, setLocation, initialLocation }) => {
             onSubmit={(values, { setSubmitting }) => {
               const { location, descriptionForm } = values
 
-              try {
-                if (id !== '') {
-                  firebase
-                    .locations()
-                    .child(userId)
-                    .child(id)
-                    .update({
-                      location,
+              if (id !== '') {
+                firebase
+                  .locations()
+                  .child(userId)
+                  .child(id)
+                  .update({
+                    location,
+                    description: descriptionForm
+                  })
+                  .then(() => {
+                    setLocation({
+                      id,
+                      title: location,
+                      description: descriptionForm,
+                      imageURL
+                    })
+                  })
+                  .catch(error => {
+                    setSnackbarState({
+                      message: error.message,
+                      variant: 'error'
+                    })
+                    setSubmitting(false)
+                  })
+
+                setSnackbarState({
+                  message: 'Location was updated!',
+                  variant: 'success'
+                })
+              } else {
+                firebase
+                  .locations()
+                  .child(userId)
+                  .push({
+                    location,
+                    description: descriptionForm
+                  })
+                  .then(snapshot => {
+                    const { key } = snapshot
+
+                    setLocation({
+                      id: key,
+                      title: location,
                       description: descriptionForm
                     })
-                    .then(() => {
-                      setLocation({
-                        id,
-                        title: location,
-                        description: descriptionForm,
-                        imageURL
-                      })
-                    })
-
-                  setSnackbarState({
-                    message: 'Location was updated!',
-                    variant: 'success'
                   })
-                } else {
-                  firebase
-                    .locations()
-                    .child(userId)
-                    .push({
-                      location,
-                      description: descriptionForm
-                    })
-                    .then(snapshot => {
-                      const { key } = snapshot
 
-                      setLocation({
-                        id: key,
-                        title: location,
-                        description: descriptionForm
-                      })
-                    })
-
-                  setSnackbarState({
-                    message: 'Location was added!',
-                    variant: 'success'
-                  })
-                }
-
-                setEdit(true)
-                setSubmitting(false)
-              } catch (error) {
-                setSnackbarState({ message: error.message, variant: 'error' })
-                setSubmitting(false)
+                setSnackbarState({
+                  message: 'Location was added!',
+                  variant: 'success'
+                })
               }
+
+              setEdit(true)
+              setSubmitting(false)
             }}
           >
             {({ isSubmitting }) => (

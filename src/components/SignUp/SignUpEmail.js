@@ -25,10 +25,9 @@ const SignupScheme = Yup.object().shape({
   password: Yup.string()
     .required('Required')
     .min(6),
-  passwordConfirmation: Yup.string().oneOf(
-    [Yup.ref('password'), null],
-    'Passwords must match'
-  )
+  passwordConfirmation: Yup.string()
+    .required('Required')
+    .oneOf([Yup.ref('password'), null], 'Passwords must match')
 })
 
 const useStyles = makeStyles(theme => ({
@@ -66,32 +65,29 @@ const SignUpForm = ({ firebase }) => {
         onSubmit={async (values, { setSubmitting }) => {
           const { username, email, password } = values
 
-          try {
-            const emailAuthUser = await firebase.doCreateUserWithEmailAndPassword(
-              email,
-              password
-            )
-
-            await firebase.user(emailAuthUser.user.uid).set({
-              username,
-              email: emailAuthUser.user.email
+          const emailAuthUser = await firebase
+            .doCreateUserWithEmailAndPassword(email, password)
+            .catch(error => {
+              setSubmitting(false)
+              setSnackbarState({ message: error.message, variant: 'error' })
             })
 
-            dispatch(
-              addUser({
-                loggedIn: true,
-                userName: username,
-                userId: emailAuthUser.user.uid
-              })
-            )
+          await firebase.user(emailAuthUser.user.uid).set({
+            username,
+            email: emailAuthUser.user.email
+          })
 
-            setSubmitting(false)
-            setSnackbarState({ message: 'Logged in!', variant: 'success' })
-            history.push(routes.home)
-          } catch (error) {
-            setSubmitting(false)
-            setSnackbarState({ message: error.message, variant: 'error' })
-          }
+          dispatch(
+            addUser({
+              loggedIn: true,
+              userName: username,
+              userId: emailAuthUser.user.uid
+            })
+          )
+
+          setSubmitting(false)
+          setSnackbarState({ message: 'Logged in!', variant: 'success' })
+          history.push(routes.home)
         }}
       >
         {({ isSubmitting }) => (

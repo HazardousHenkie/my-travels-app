@@ -63,7 +63,7 @@ const SignUpForm = ({ firebase }) => {
 
           firebase
             .doSignInWithEmailAndPassword(email, password)
-            .then(signInResult => {
+            .then(async signInResult => {
               if (signInResult.additionalUserInfo.isNewUser) {
                 firebase.user(signInResult.user.uid).set({
                   username: signInResult.user.email,
@@ -78,23 +78,26 @@ const SignUpForm = ({ firebase }) => {
                   })
                 )
               } else {
-                firebase.user(signInResult.user.uid).once('value', snapshot => {
-                  dispatch(
-                    addUser({
-                      loggedIn: true,
-                      userName: snapshot.val().username,
-                      userDescription:
-                        snapshot.val().description !== null
-                          ? snapshot.val().description
-                          : '',
-                      countries:
-                        snapshot.val().countries !== undefined
-                          ? snapshot.val().countries
-                          : null,
-                      userId: signInResult.user.uid
-                    })
-                  )
-                })
+                firebase
+                  .user(signInResult.user.uid)
+                  .once('value')
+                  .then(async snapshot => {
+                    dispatch(
+                      addUser({
+                        loggedIn: true,
+                        userName: snapshot.val().username,
+                        userDescription:
+                          snapshot.val().description !== null
+                            ? snapshot.val().description
+                            : '',
+                        countries:
+                          snapshot.val().countries !== undefined
+                            ? snapshot.val().countries
+                            : null,
+                        userId: signInResult.user.uid
+                      })
+                    )
+                  })
               }
 
               setSubmitting(false)

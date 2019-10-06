@@ -10,8 +10,6 @@ import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import * as routes from '../../constants/routes'
 
-import SignOutButton from '../SignOut'
-
 import './MainMenu.scss'
 
 const useStyles = makeStyles(theme => ({
@@ -93,7 +91,16 @@ const MainMenu = () => {
           </Button>
         )}
 
-        {authenticated > 0 && <SignOutButton />}
+        {authenticated > 0 && (
+          <Button
+            component={LinkRef}
+            to={routes.signOut}
+            className={classes.button}
+            color="inherit"
+          >
+            Sign Out
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   )
