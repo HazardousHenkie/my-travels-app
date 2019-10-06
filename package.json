@@ -34,10 +34,12 @@
     "redux": "^4.0.4",
     "redux-persist": "^6.0.0",
     "shortid": "^2.2.15",
+    "source-map-explorer": "^2.1.0",
     "typeface-roboto": "0.0.75",
     "yup": "^0.27.0"
   },
   "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
