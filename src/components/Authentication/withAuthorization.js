@@ -10,7 +10,7 @@ import * as routes from '../../constants/routes'
 const withAuthorization = Component => {
   function WithAuthorization(props) {
     useEffect(() => {
-      const listener = props.firebase.auth.onAuthStateChanged(
+      const unsubscribe = props.firebase.auth.onAuthStateChanged(
         authUser => {
           if (!authUser) {
             history.push(routes.home)
@@ -19,7 +19,7 @@ const withAuthorization = Component => {
         () => history.push(routes.home)
       )
 
-      return () => listener
+      return () => unsubscribe()
     }, [props])
     return (
       <AuthUserContext.Consumer>

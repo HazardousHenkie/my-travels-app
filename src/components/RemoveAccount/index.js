@@ -10,6 +10,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Typography from '@material-ui/core/Typography'
+import moment from 'moment'
 import { addUser } from '../../Redux/Actions'
 import { withFirebase } from '../Firebase'
 import SnackbarContext from '../Snackbar/Context'
@@ -73,80 +74,93 @@ const CustomizedDialogs = ({ firebase }) => {
   }
 
   const HandleDelete = () => {
-    // check logout lifespan
-    firebase
-      .locations()
-      .child(userId)
-      .once('value')
-      .then(async snapshot => {
-        if (snapshot.exists()) {
-          const promises = []
+    const lastLogin = moment(firebase.auth.currentUser.metadata.lastSignInTime)
 
-          snapshot.forEach(element => {
-            if (element.val().downloadURL) {
+    const currentDateMinusOneWeek = moment().subtract(1, 'minutes')
+
+    if (lastLogin.isBefore(currentDateMinusOneWeek)) {
+      setSnackbarState({
+        message: 'To remove your account you to logout and login again.',
+        variant: 'error'
+      })
+    } else {
+      firebase
+        .locations()
+        .child(userId)
+        .once('value')
+        .then(async snapshot => {
+          if (snapshot.exists()) {
+            const promises = []
+
+            snapshot.forEach(element => {
+              if (element.val().downloadURL) {
+                firebase
+                  .firebase()
+                  .storage()
+                  .refFromURL(element.val().downloadURL)
+                  .delete()
+              }
+            })
+
+            Promise.all(promises).then(() => {
               firebase
-                .firebase()
-                .storage()
-                .refFromURL(element.val().downloadURL)
-                .delete()
-            }
-          })
+                .locations()
+                .child(userId)
+                .remove()
+            })
+          }
+        })
+        .catch(removeError => {
+          setSnackbarState({ message: removeError.message, variant: 'error' })
+        })
 
-          Promise.all(promises).then(() => {
+      firebase
+        .messages(userId)
+        .orderByChild('userId')
+        .equalTo(userId)
+        .once('value')
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            snapshot.forEach(element => {
+              element.ref.remove()
+            })
+          }
+        })
+        .catch(removeError => {
+          setSnackbarState({ message: removeError.message, variant: 'error' })
+        })
+      firebase
+        .user(userId)
+        .once('value')
+        .then(snapshot => {
+          if (snapshot.exists() && snapshot.val().downloadURL) {
             firebase
-              .locations()
-              .child(userId)
-              .remove()
-          })
-        }
-      })
-      .catch(removeError => {
-        setSnackbarState({ message: removeError.message, variant: 'error' })
-      })
+              .firebase()
+              .storage()
+              .refFromURL(snapshot.val().downloadURL)
+              .delete()
+          }
+        })
+        .then(() => {
+          firebase.user(userId).remove()
+        })
+        .catch(removeError => {
+          setSnackbarState({ message: removeError.message, variant: 'error' })
+        })
 
-    firebase
-      .messages(userId)
-      .orderByChild('userId')
-      .equalTo(userId)
-      .once('value')
-      .then(snapshot => {
-        if (snapshot.exists()) {
-          snapshot.forEach(element => {
-            element.ref.remove()
+      firebase.auth.currentUser
+        .delete()
+        .then(() => {
+          dispatch(addUser({ loggedin: false, userName: '', userId: '' }))
+          setSnackbarState({
+            message: 'Account was deleted!',
+            variant: 'error'
           })
-        }
-      })
-      .catch(removeError => {
-        setSnackbarState({ message: removeError.message, variant: 'error' })
-      })
-    firebase
-      .user(userId)
-      .once('value')
-      .then(snapshot => {
-        if (snapshot.exists() && snapshot.val().downloadURL) {
-          firebase
-            .firebase()
-            .storage()
-            .refFromURL(snapshot.val().downloadURL)
-            .delete()
-        }
-      })
-      .then(() => {
-        firebase.user(userId).remove()
-      })
-      .catch(removeError => {
-        setSnackbarState({ message: removeError.message, variant: 'error' })
-      })
-
-    firebase.auth.currentUser
-      .delete()
-      .then(() => {
-        dispatch(addUser({ loggedin: false, userName: '', userId: '' }))
-        setSnackbarState({ message: 'Account was deleted!', variant: 'error' })
-      })
-      .catch(removeError => {
-        setSnackbarState({ message: removeError.message, variant: 'error' })
-      })
+        })
+        .catch(removeError => {
+          setSnackbarState({ message: removeError.message, variant: 'error' })
+        })
+    }
   }
 
   return (

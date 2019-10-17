@@ -62,6 +62,7 @@ const MyProfile = ({ firebase }) => {
   const HandleChangeMulti = value => {
     setMulti(value)
   }
+
   useEffect(() => {
     const unsubscribe = firebase
       .user(userId)
@@ -125,7 +126,7 @@ const MyProfile = ({ firebase }) => {
                   .update({
                     username: name,
                     description,
-                    countries: multi !== null ? multi : null
+                    countries: multi !== undefined ? multi : null
                   })
                   .catch(error => {
                     setSnackbarState({

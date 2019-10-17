@@ -2,6 +2,8 @@ import React, { useContext } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import LazyLoad from 'react-lazy-load'
+
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -102,11 +104,13 @@ const LocationCard = ({ location, edit, firebase }) => {
         {/* eslint-enable */}
 
         {location.image && (
-          <CardMedia
-            className={classes.image}
-            image={location.image}
-            title={location.title}
-          />
+          <LazyLoad>
+            <CardMedia
+              className={classes.image}
+              image={location.image}
+              title={location.title}
+            />
+          </LazyLoad>
         )}
 
         <CardContent>
