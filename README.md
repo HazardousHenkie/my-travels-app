@@ -1,3 +1,7 @@
+## explanation
+
+An app I created to get to know the new context/hooks API in react (and other stuff). This app allows you to store all the places/countries you have visited (as a memorial) and it gives you a nice overview of all places visited. On the other hand, it allows you to see places other people visited, for inspiration, and add/edit/delete noted/memos for your next trip. You are also able to see other people's profiles and see where they visited, create/edit/delete your profile, add/edit/delete locations you visited. Please have a look at my application and code!
+
 ## Online
 
 It's online here: https://my-travels-react.herokuapp.com/

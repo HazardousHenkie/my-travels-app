@@ -106,6 +106,7 @@ const SignUpForm = ({ firebase }) => {
             })
             .catch(error => {
               const { message } = error
+              setSubmitting(false)
               setSnackbarState({ message, variant: 'error' })
               history.push(routes.home)
             })
