@@ -24,7 +24,7 @@ const withAuthorization = Component => {
     return (
       <AuthUserContext.Consumer>
         {authenticated =>
-          authenticated === true ? <Component {...props} /> : authenticated}
+          authenticated === true ? <Component {...props} /> : ''}
       </AuthUserContext.Consumer>
     )
   }

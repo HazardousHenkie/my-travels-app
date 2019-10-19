@@ -64,7 +64,7 @@ const MyProfile = ({ firebase }) => {
   }
 
   useEffect(() => {
-    const unsubscribe = firebase
+    firebase
       .user(userId)
       .once('value', snapshot => {
         if (
@@ -88,7 +88,6 @@ const MyProfile = ({ firebase }) => {
       .catch(removeError => {
         setSnackbarState({ message: removeError, variant: 'error' })
       })
-    return () => unsubscribe
   }, [firebase, setSnackbarState, userId])
 
   const imageProps = {

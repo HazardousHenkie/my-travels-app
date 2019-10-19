@@ -41,7 +41,7 @@ const Profile = ({ firebase, match }) => {
   const { setSnackbarState } = useContext(SnackbarContext)
 
   useEffect(() => {
-    const unsubscribe = firebase
+    firebase
       .user(match.params.id)
       .once('value', snapshot => {
         if (snapshot.val() !== null) {
@@ -58,7 +58,6 @@ const Profile = ({ firebase, match }) => {
       .catch(removeError => {
         setSnackbarState({ message: removeError.message, variant: 'error' })
       })
-    return () => unsubscribe
   }, [firebase, setSnackbarState, match])
 
   const { image, name, description, countries } = user

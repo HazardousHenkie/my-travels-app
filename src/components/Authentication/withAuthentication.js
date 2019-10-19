@@ -16,7 +16,7 @@ const withAuthentication = Component => {
     useEffect(() => {
       const listener = firebase.auth.onAuthStateChanged(authUser => {
         if (authUser) {
-          if (loggedIn === false) {
+          if (!loggedIn) {
             firebase.user(userId).once('value', snapshot => {
               dispatch(
                 addUser({

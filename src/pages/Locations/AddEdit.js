@@ -77,7 +77,7 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
 
   useEffect(() => {
     if (match && match.params.id !== undefined && location === undefined) {
-      const unsubscribe = firebase
+      firebase
         .locations()
         .child(userId)
         .child(match.params.id)
@@ -101,7 +101,6 @@ const HorizontalLinearStepper = ({ firebase, match, location }) => {
         .catch(removeError => {
           setSnackbarState({ message: removeError.message, variant: 'error' })
         })
-      return () => unsubscribe
     }
     setFinishedRequest(true)
     return () => null

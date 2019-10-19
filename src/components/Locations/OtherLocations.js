@@ -33,7 +33,7 @@ const OtherLocations = ({ firebase }) => {
   // we can add a limit on the bottom when everything is finished
   // (like slice()) but for now wer'e not doing that
   useEffect(() => {
-    const unsubscribe = firebase
+    firebase
       .locations()
       .limitToLast(10)
       .once('value')
@@ -99,7 +99,6 @@ const OtherLocations = ({ firebase }) => {
       .catch(error => {
         setSnackbarState({ message: error.message, variant: 'error' })
       })
-    return () => unsubscribe
   }, [firebase, setSnackbarState, userId])
 
   return (

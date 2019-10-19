@@ -47,7 +47,7 @@ const AddStep2 = ({ firebase, step2Props }) => {
 
   useEffect(() => {
     if (!initialSetup) {
-      const unsubscribe = firebase
+      firebase
         .locations()
         .child(userId)
         .child(id)
@@ -70,7 +70,6 @@ const AddStep2 = ({ firebase, step2Props }) => {
         .catch(removeError => {
           setSnackbarState({ message: removeError.message, variant: 'error' })
         })
-      return () => unsubscribe
     }
     setFinishedRequest(true)
     return () => null
