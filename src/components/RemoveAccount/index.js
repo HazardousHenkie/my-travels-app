@@ -80,7 +80,7 @@ const CustomizedDialogs = ({ firebase }) => {
 
     if (lastLogin.isBefore(currentDateMinusOneMinute)) {
       setSnackbarState({
-        message: 'To remove your account you to logout and login again.',
+        message: 'To remove your account you need to logout and login again.',
         variant: 'error'
       })
     } else {
