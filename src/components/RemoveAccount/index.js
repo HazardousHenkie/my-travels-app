@@ -76,9 +76,9 @@ const CustomizedDialogs = ({ firebase }) => {
   const HandleDelete = () => {
     const lastLogin = moment(firebase.auth.currentUser.metadata.lastSignInTime)
 
-    const currentDateMinusOneWeek = moment().subtract(1, 'minutes')
+    const currentDateMinusOneMinute = moment().subtract(1, 'minutes')
 
-    if (lastLogin.isBefore(currentDateMinusOneWeek)) {
+    if (lastLogin.isBefore(currentDateMinusOneMinute)) {
       setSnackbarState({
         message: 'To remove your account you to logout and login again.',
         variant: 'error'
