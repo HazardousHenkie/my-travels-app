@@ -19,7 +19,7 @@
     "formik": "^1.5.8",
     "formik-material-ui": "^0.0.22",
     "history": "^4.9.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "node-sass": "^4.13.1",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
